@@ -1,8 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.Server.Models;
+using ProcessControl.Domain.Entities;
 
-namespace ProcessControl.Server.Data
+namespace ProcessControl.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
@@ -10,7 +10,7 @@ namespace ProcessControl.Server.Data
         {
         }
 
-        
+
         public DbSet<Processo> Processos { get; set; }
         public DbSet<HistoricoProcesso> HistoricosProcesso { get; set; }
 

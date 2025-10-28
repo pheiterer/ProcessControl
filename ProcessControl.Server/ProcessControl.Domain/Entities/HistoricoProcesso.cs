@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace ProcessControl.Server.Models
+namespace ProcessControl.Domain.Entities
 {
     public class HistoricoProcesso
     {
@@ -9,10 +9,10 @@ namespace ProcessControl.Server.Models
 
         public int ProcessoId { get; set; }
 
-        public Processo Processo { get; set; }
+        public required Processo Processo { get; set; }
 
         [Required]
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
         public DateTime DataInclusao { get; set; }
 

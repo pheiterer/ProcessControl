@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using ProcessControl.Server.Data;
+using ProcessControl.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace ProcessControl.Server.Migrations
+namespace ProcessControl.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace ProcessControl.Server.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("ProcessControl.Server.Models.HistoricoProcesso", b =>
+            modelBuilder.Entity("ProcessControl.Domain.Entities.HistoricoProcesso", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -50,7 +50,7 @@ namespace ProcessControl.Server.Migrations
                     b.ToTable("HistoricosProcesso");
                 });
 
-            modelBuilder.Entity("ProcessControl.Server.Models.Processo", b =>
+            modelBuilder.Entity("ProcessControl.Domain.Entities.Processo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +66,6 @@ namespace ProcessControl.Server.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Descricao")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("NumeroProcesso")
@@ -88,9 +87,9 @@ namespace ProcessControl.Server.Migrations
                     b.ToTable("Processos");
                 });
 
-            modelBuilder.Entity("ProcessControl.Server.Models.HistoricoProcesso", b =>
+            modelBuilder.Entity("ProcessControl.Domain.Entities.HistoricoProcesso", b =>
                 {
-                    b.HasOne("ProcessControl.Server.Models.Processo", "Processo")
+                    b.HasOne("ProcessControl.Domain.Entities.Processo", "Processo")
                         .WithMany("Historico")
                         .HasForeignKey("ProcessoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -99,7 +98,7 @@ namespace ProcessControl.Server.Migrations
                     b.Navigation("Processo");
                 });
 
-            modelBuilder.Entity("ProcessControl.Server.Models.Processo", b =>
+            modelBuilder.Entity("ProcessControl.Domain.Entities.Processo", b =>
                 {
                     b.Navigation("Historico");
                 });

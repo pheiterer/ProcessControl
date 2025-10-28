@@ -1,21 +1,16 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.Server.Data;
-using ProcessControl.Server.Models;
+using ProcessControl.Domain.Entities;
+using ProcessControl.Infrastructure.Persistence;
 
-namespace ProcessControl.Server.Controllers
+namespace ProcessControl.API.Controllers
 {
     [Route("api/processos/{processoId}/historicos")]
     [ApiController]
-    public class HistoricosController : ControllerBase
+    public class HistoricosController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public HistoricosController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         // GET: api/processos/5/historicos
         [HttpGet]
@@ -79,7 +74,7 @@ namespace ProcessControl.Server.Controllers
             _context.HistoricosProcesso.Add(historico);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHistorico", new { processoId = processoId, id = historico.Id }, historico);
+            return CreatedAtAction("GetHistorico", new { processoId, id = historico.Id }, historico);
         }
 
         // DELETE: api/processos/5/historicos/1

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ProcessControl.Server.Migrations
+namespace ProcessControl.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -23,7 +23,7 @@ namespace ProcessControl.Server.Migrations
                     Reu = table.Column<string>(type: "text", nullable: false),
                     DataAjuizamento = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
-                    Descricao = table.Column<string>(type: "text", nullable: false)
+                    Descricao = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

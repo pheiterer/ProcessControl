@@ -1,7 +1,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace ProcessControl.Server.Models
+namespace ProcessControl.Domain.Entities
 {
     public enum StatusProcesso
     {
@@ -15,20 +15,20 @@ namespace ProcessControl.Server.Models
         public int Id { get; set; }
 
         [Required]
-        public string NumeroProcesso { get; set; }
+        public required string NumeroProcesso { get; set; }
 
         [Required]
-        public string Autor { get; set; }
+        public required string Autor { get; set; }
 
         [Required]
-        public string Reu { get; set; }
+        public required string Reu { get; set; }
 
         public DateTime DataAjuizamento { get; set; }
 
         public StatusProcesso Status { get; set; }
 
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
-        public ICollection<HistoricoProcesso> Historico { get; set; }
+        public ICollection<HistoricoProcesso>? Historico { get; set; }
     }
 }

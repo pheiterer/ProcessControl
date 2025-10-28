@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36616.10 d17.14
+VisualStudioVersion = 17.14.36616.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "processcontrol.client", "processcontrol.client\processcontrol.client.esproj", "{170CD348-FE93-1B3D-4778-C7F8B1FB29B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessControl.Server", "ProcessControl.Server\ProcessControl.Server.csproj", "{2AD42D97-4B25-4451-85C2-254A69DF2FAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessControl.API", "ProcessControl.Server\ProcessControl.API.csproj", "{31541269-34A4-E5EF-2565-5707F99F3A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,10 @@ Global
 		{170CD348-FE93-1B3D-4778-C7F8B1FB29B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{170CD348-FE93-1B3D-4778-C7F8B1FB29B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{170CD348-FE93-1B3D-4778-C7F8B1FB29B2}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{2AD42D97-4B25-4451-85C2-254A69DF2FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2AD42D97-4B25-4451-85C2-254A69DF2FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2AD42D97-4B25-4451-85C2-254A69DF2FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2AD42D97-4B25-4451-85C2-254A69DF2FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31541269-34A4-E5EF-2565-5707F99F3A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31541269-34A4-E5EF-2565-5707F99F3A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31541269-34A4-E5EF-2565-5707F99F3A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31541269-34A4-E5EF-2565-5707F99F3A0B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

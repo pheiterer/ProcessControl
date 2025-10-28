@@ -1,21 +1,16 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.Server.Data;
-using ProcessControl.Server.Models;
+using ProcessControl.Domain.Entities;
+using ProcessControl.Infrastructure.Persistence;
 
-namespace ProcessControl.Server.Controllers
+namespace ProcessControl.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProcessosController : ControllerBase
+    public class ProcessosController(ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public ProcessosController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         // GET: api/Processos
         [HttpGet]

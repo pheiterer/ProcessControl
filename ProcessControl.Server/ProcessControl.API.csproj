@@ -12,6 +12,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ProcessControl.Application\**" />
+    <Compile Remove="ProcessControl.Domain\**" />
+    <Compile Remove="ProcessControl.Infrastructure\**" />
+    <Content Remove="ProcessControl.Application\**" />
+    <Content Remove="ProcessControl.Domain\**" />
+    <Content Remove="ProcessControl.Infrastructure\**" />
+    <EmbeddedResource Remove="ProcessControl.Application\**" />
+    <EmbeddedResource Remove="ProcessControl.Domain\**" />
+    <EmbeddedResource Remove="ProcessControl.Infrastructure\**" />
+    <None Remove="ProcessControl.Application\**" />
+    <None Remove="ProcessControl.Domain\**" />
+    <None Remove="ProcessControl.Infrastructure\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
     </PackageReference>
@@ -28,6 +43,9 @@
     <ProjectReference Include="..\processcontrol.client\processcontrol.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="ProcessControl.Application\ProcessControl.Application.csproj" />
+    <ProjectReference Include="ProcessControl.Domain\ProcessControl.Domain.csproj" />
+    <ProjectReference Include="ProcessControl.Infrastructure\ProcessControl.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
