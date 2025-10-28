@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ProcessControl.Application\ProcessControl.Application.csproj" />
     <ProjectReference Include="..\ProcessControl.Domain\ProcessControl.Domain.csproj" />
   </ItemGroup>
 

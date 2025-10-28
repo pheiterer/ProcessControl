@@ -1,10 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using ProcessControl.Application.Interfaces;
+using ProcessControl.Application.Services;
 using ProcessControl.Infrastructure.Persistence;
+using ProcessControl.Infrastructure.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IProcessoRepository, ProcessoRepository>();
+builder.Services.AddScoped<IHistoricoProcessoRepository, HistoricoProcessoRepository>();
+builder.Services.AddScoped<IProcessoService, ProcessoService>();
+builder.Services.AddScoped<IHistoricoProcessoService, HistoricoProcessoService>();
+
 // Add services to the container.
 builder.Services.AddDbContext<ProcessControl.Infrastructure.Persistence.ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -1,6 +1,3 @@
-
-using System.ComponentModel.DataAnnotations;
-
 namespace ProcessControl.Domain.Entities
 {
     public class HistoricoProcesso
@@ -11,10 +8,9 @@ namespace ProcessControl.Domain.Entities
 
         public required Processo Processo { get; set; }
 
-        [Required]
-        public string? Descricao { get; set; }
+        public required string Descricao { get; set; }
 
-        public DateTime DataInclusao { get; set; }
+        public DateTime DataInclusao { get; set; } = DateTime.UtcNow;
 
         public DateTime DataAlteracao { get; set; }
     }

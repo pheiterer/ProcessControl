@@ -4,13 +4,8 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
-
-
         public DbSet<Processo> Processos { get; set; }
         public DbSet<HistoricoProcesso> HistoricosProcesso { get; set; }
 
