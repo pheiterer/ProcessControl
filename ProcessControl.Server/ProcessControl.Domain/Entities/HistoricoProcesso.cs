@@ -1,10 +1,10 @@
 namespace ProcessControl.Domain.Entities
 {
-    public class HistoricoProcesso
+    public sealed class HistoricoProcesso
     {
         public int Id { get; set; }
 
-        public int ProcessoId { get; set; }
+        public required int ProcessoId { get; set; }
 
         public required Processo Processo { get; set; }
 

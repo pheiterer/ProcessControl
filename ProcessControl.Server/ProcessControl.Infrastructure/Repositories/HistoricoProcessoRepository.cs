@@ -6,16 +6,22 @@ using ProcessControl.Infrastructure.Persistence;
 
 namespace ProcessControl.Infrastructure.Repositories
 {
-    public class HistoricoProcessoRepository(ApplicationDbContext context) : IHistoricoProcessoRepository
+    public sealed class HistoricoProcessoRepository(ApplicationDbContext context) : IHistoricoProcessoRepository
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<HistoricoProcesso>> GetByProcessoIdAsync(int processoId)
+        public async Task<IEnumerable<HistoricoProcesso>> GetByProcessoIdAsync(int page, int limit, int processoId)
         {
-            return await _context.HistoricosProcesso.Where(h => h.ProcessoId == processoId).ToListAsync();
+            var query = _context.HistoricosProcesso
+                .Where(h => h.ProcessoId == processoId)
+                .OrderByDescending(h => h.DataInclusao)
+                .Skip((page - 1) * limit)
+                .Take(limit);
+
+            return await query.ToListAsync();
         }
 
-        public async Task<HistoricoProcesso> GetByIdAsync(int processoId, int id)
+        public async Task<HistoricoProcesso?> GetByIdAsync(int processoId, int id)
         {
             return await _context.HistoricosProcesso.FirstOrDefaultAsync(h => h.ProcessoId == processoId && h.Id == id);
         }

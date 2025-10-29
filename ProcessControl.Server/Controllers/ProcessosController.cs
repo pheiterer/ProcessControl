@@ -7,26 +7,24 @@ namespace ProcessControl.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProcessosController : ControllerBase
+    public class ProcessosController(IProcessoService processoService) : ControllerBase
     {
-        private readonly IProcessoService _processoService;
-
-        public ProcessosController(IProcessoService processoService)
-        {
-            _processoService = processoService;
-        }
+        private readonly IProcessoService _processoService = processoService;
 
         // GET: api/Processos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProcessoDto>>> GetProcessos([FromQuery] string? numeroProcesso)
+        public async Task<ActionResult<IEnumerable<ProcessoDto>>> GetProcessos(
+            [FromQuery] int page = 1,
+            [FromQuery] int? limit = null,
+            [FromQuery] string? numeroProcesso = null)
         {
-            var processos = await _processoService.GetAllProcessosAsync(numeroProcesso);
+            var processos = await _processoService.GetProcessListAsync(page, limit, numeroProcesso);
             return Ok(processos);
         }
 
         // GET: api/Processos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProcessoDto>> GetProcesso(int id)
+        public async Task<ActionResult<ProcessoDto>> GetProcesso([FromRoute] int id)
         {
             var processo = await _processoService.GetProcessoByIdAsync(id);
             if (processo == null)
@@ -38,7 +36,7 @@ namespace ProcessControl.API.Controllers
 
         // PUT: api/Processos/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProcesso(int id, UpdateProcessoDto updateProcessoDto)
+        public async Task<IActionResult> PutProcesso([FromRoute] int id, UpdateProcessoDto updateProcessoDto)
         {
             await _processoService.UpdateProcessoAsync(id, updateProcessoDto);
             return NoContent();
@@ -54,7 +52,7 @@ namespace ProcessControl.API.Controllers
 
         // DELETE: api/Processos/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProcesso(int id)
+        public async Task<IActionResult> DeleteProcesso([FromRoute] int id)
         {
             await _processoService.DeleteProcessoAsync(id);
             return NoContent();

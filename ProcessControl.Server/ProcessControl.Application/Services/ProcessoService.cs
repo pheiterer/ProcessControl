@@ -5,15 +5,23 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public class ProcessoService(IProcessoRepository processoRepository) : IProcessoService
+    public sealed class ProcessoService(IProcessoRepository processoRepository) : IProcessoService
     {
         private readonly IProcessoRepository _processoRepository = processoRepository;
 
-        public async Task<IEnumerable<ProcessoDto>> GetAllProcessosAsync(string? numeroProcesso)
+        public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? numeroProcesso)
         {
-            var processos = string.IsNullOrEmpty(numeroProcesso)
-                ? await _processoRepository.GetAllAsync()
-                : await _processoRepository.GetByNumeroProcessoAsync(numeroProcesso);
+            const int defaultLimit = 10;
+            const int maxLimit = 50;
+
+            if (page < 1)
+                page = 1;
+
+            int pageSize = limit.HasValue && limit.Value > 0
+                ? Math.Min(limit.Value, maxLimit)
+                : defaultLimit;
+
+            var processos = await _processoRepository.GetProcessListAsync(page, pageSize, numeroProcesso);
 
             return processos.Select(p => new ProcessoDto
             {
@@ -27,7 +35,7 @@ namespace ProcessControl.Application.Services
             });
         }
 
-        public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
+        public async Task<ProcessoDto?> GetProcessoByIdAsync(int id)
         {
             var processo = await _processoRepository.GetByIdAsync(id);
             if (processo == null) return null;
