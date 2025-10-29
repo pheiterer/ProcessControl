@@ -1,0 +1,56 @@
+Desenvolvedor(a) Full Stack – C# / Angular
+Desafio Técnico – Controle de Processos Judiciais
+Você deverá desenvolver uma aplicação simples para gestão de processos judiciais, com backend em C# (.NET) e frontend em Angular.
+________________________________________
+Requisitos obrigatórios
+Backend (C# / .NET)
+Crie uma API REST que permita gerenciar processos judiciais, possibilitando:
+•	Cadastrar um processo.
+•	Listar todos os processos com pesquisa pelo número de processo.
+•	Editar um processo.
+•	Excluir um processo.
+•	Dentro do cadastro de processo criar um Detail de histórico de movimentação com as seguintes opções  
+o	Cadastrar histórico. 
+o	Listar todos os históricos. 
+o	Editar um histórico.
+o	Excluir um histórico. 
+Cada processo deve conter os seguintes campos:
+•	Id (gerado automaticamente).
+•	NúmeroProcesso (formato livre, mas deve ser único).
+•	Autor (nome da parte autora).
+•	Réu (nome da parte ré).
+•	DataAjuizamento (data em que o processo foi ajuizado).
+•	Status (Em andamento, Suspenso, Encerrado).
+•	Descrição (campo livre para observações).
+O processo deverá ter um histórico de movimentações com os seguintes campos:
+•	Id (gerado automaticamente).
+•	Id Processo
+•	Descrição
+•	Data de Inclusão 
+•	Data Alteração 
+Tecnologias:
+•	.NET 8 ou superior.
+•	Entity Framework (preferencialmente com PostgreSQL).
+________________________________________
+Frontend (Angular)
+Crie uma interface web que permita:
+•	Listar todos os processos judiciais.
+•	Cadastrar e editar processos por meio de um formulário.
+•	Excluir processos.
+•	Atualizar o status do processo diretamente na listagem.
+________________________________________
+Diferenciais (não obrigatórios, mas contarão pontos extras)
+•	Validação de campos no frontend e backend.
+•	Paginação, busca e filtros (por número, autor, réu ou status).
+•	Uso de Docker para subir o projeto completo.
+•	Implementação de testes unitários.
+•	Utilização de componentes visuais modernos (Tailwind CSS, Material Design ou Bootstrap).
+________________________________________
+Formato de Avaliação
+Sua avaliação será baseada nos seguintes critérios:
+1.	Entrega no prazo solicitado.
+2.	Envio do código via repositório no GitHub (análise de commits, histórico e organização).
+3.	Clareza e qualidade do código – legibilidade, boas práticas e manutenibilidade.
+4.	Organização do projeto – camadas bem definidas e boa estrutura de pastas e componentes.
+5.	Domínio das tecnologias solicitadas (Angular e C#/.NET).
+6.	Entrega do que foi solicitado, priorizando funcionalidade e boas práticas.

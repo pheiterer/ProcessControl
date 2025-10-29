@@ -1,0 +1,55 @@
+<div class="container mt-4" *ngIf="process">
+  <div class="card">
+    <div class="card-header">
+      <h2>Detalhes do Processo</h2>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Número do Processo:</strong> {{ process.numeroProcesso }}</p>
+          <p><strong>Autor:</strong> {{ process.autor }}</p>
+          <p><strong>Réu:</strong> {{ process.reu }}</p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Data de Ajuizamento:</strong> {{ process.dataAjuizamento | date:'dd/MM/yyyy' }}</p>
+          <p><strong>Status:</strong> {{ process.status }}</p>
+        </div>
+      </div>
+      <p><strong>Descrição:</strong> {{ process.descricao }}</p>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3>Histórico de Movimentações</h3>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movementFormModal">Adicionar Movimentação</button>
+    </div>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Data de Inclusão</th>
+            <th>Data de Alteração</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of process.historico">
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.dataInclusao | date:'dd/MM/yyyy' }}</td>
+            <td>{{ item.dataAlteracao | date:'dd/MM/yyyy' }}</td>
+          </tr>
+          <tr *ngIf="!process.historico || process.historico.length === 0">
+            <td colspan="3" class="text-center">Nenhum histórico encontrado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!process" class="text-center mt-4">
+  <p>Carregando...</p>
+</div>
+
+<app-movement-form *ngIf="process" [processId]="process.id" (movementAdded)="loadProcess()"></app-movement-form>
