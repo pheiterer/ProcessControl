@@ -1,5 +1,6 @@
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Interfaces;
+using ProcessControl.Application.Exceptions;
 using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
@@ -35,7 +36,7 @@ namespace ProcessControl.Application.Services
         public async Task<HistoricoProcessoDto> CreateHistoricoAsync(int processoId, CreateHistoricoProcessoDto createHistoricoDto)
         {
             var processo = await _processoRepository.GetByIdAsync(processoId);
-            if (processo == null) return null; // Ou lançar uma exceção
+            if (processo == null) throw new NotFoundException($"Processo with ID {processoId} not found.");
 
             var historico = new HistoricoProcesso
             {
@@ -61,7 +62,7 @@ namespace ProcessControl.Application.Services
         public async Task UpdateHistoricoAsync(int processoId, int id, UpdateHistoricoProcessoDto updateHistoricoDto)
         {
             var historico = await _historicoRepository.GetByIdAsync(processoId, id);
-            if (historico == null) return;
+            if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
 
             historico.Descricao = updateHistoricoDto.Descricao;
             historico.DataAlteracao = DateTime.UtcNow;
@@ -72,10 +73,8 @@ namespace ProcessControl.Application.Services
         public async Task DeleteHistoricoAsync(int processoId, int id)
         {
             var historico = await _historicoRepository.GetByIdAsync(processoId, id);
-            if (historico != null)
-            {
-                await _historicoRepository.DeleteAsync(historico.Id);
-            }
+            if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
+            await _historicoRepository.DeleteAsync(historico.Id);
         }
     }
 }

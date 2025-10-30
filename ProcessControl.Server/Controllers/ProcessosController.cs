@@ -27,10 +27,6 @@ namespace ProcessControl.API.Controllers
         public async Task<ActionResult<ProcessoDto>> GetProcesso([FromRoute] int id)
         {
             var processo = await _processService.GetProcessoByIdAsync(id);
-            if (processo == null)
-            {
-                return NotFound();
-            }
             return Ok(processo);
         }
 

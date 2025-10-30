@@ -3,6 +3,7 @@ using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Services;
 using ProcessControl.Infrastructure.Persistence;
 using ProcessControl.Infrastructure.Repositories;
+using ProcessControl.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +53,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseCors("AllowAngular");
 

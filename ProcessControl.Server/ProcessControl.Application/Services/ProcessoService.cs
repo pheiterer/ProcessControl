@@ -1,5 +1,6 @@
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Interfaces;
+using ProcessControl.Application.Exceptions;
 using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
@@ -34,10 +35,10 @@ namespace ProcessControl.Application.Services
             });
         }
 
-        public async Task<ProcessoDto?> GetProcessoByIdAsync(int id)
+        public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
         {
             var processo = await _processRepository.GetByIdAsync(id);
-            if (processo == null) return null;
+            if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
             return new ProcessoDto
             {
@@ -80,7 +81,7 @@ namespace ProcessControl.Application.Services
         public async Task UpdateProcessoAsync(int id, UpdateProcessoDto updateProcessoDto)
         {
             var processo = await _processRepository.GetByIdAsync(id);
-            if (processo == null) return;
+            if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
             processo.NumeroProcesso = updateProcessoDto.NumeroProcesso;
             processo.Autor = updateProcessoDto.Autor;
@@ -93,6 +94,8 @@ namespace ProcessControl.Application.Services
 
         public async Task DeleteProcessoAsync(int id)
         {
+            var processo = await _processRepository.GetByIdAsync(id);
+            if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
             await _processRepository.DeleteAsync(id);
         }
     }
