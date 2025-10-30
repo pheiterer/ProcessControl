@@ -38,7 +38,7 @@
   <div class="card mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h3>Histórico de Movimentações</h3>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movementFormModal">Adicionar Movimentação</button>
+      <button class="btn btn-primary" (click)="movementFormComp?.show()">Adicionar Movimentação</button>
     </div>
     <div class="card-body">
       <div *ngIf="isLoadingHistorico" class="text-center py-4">
@@ -87,4 +87,4 @@
   <p>Carregando...</p>
 </div>
 
-<app-movement-form *ngIf="process" [processId]="process.id" (movementAdded)="loadHistorico(process.id)"></app-movement-form>
+<app-movement-form #movementFormComp *ngIf="process" [processId]="process.id" (movementAdded)="loadHistorico(process.id)"></app-movement-form>

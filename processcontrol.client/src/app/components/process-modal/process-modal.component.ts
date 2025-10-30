@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModalComponent } from '../shared/modal/modal.component';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProcessService } from '../../services/process.service';
 import { ProcessModel, ProcessStatus, ProcessStatusText } from '../../models/process.model';
@@ -7,7 +8,7 @@ import { ProcessModel, ProcessStatus, ProcessStatusText } from '../../models/pro
 @Component({
   selector: 'app-process-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ModalComponent],
   templateUrl: './process-modal.component.html',
   styleUrls: ['./process-modal.component.css']
 })
@@ -19,6 +20,7 @@ export class ProcessModalComponent implements OnInit {
   form: FormGroup;
   isEdit = false;
   statusOptions: Array<{ value: number; label: string }> = [];
+  @ViewChild('processModal') processModal!: ModalComponent;
 
   constructor(private fb: FormBuilder, private processService: ProcessService) {
     this.form = this.fb.group({
@@ -42,6 +44,11 @@ export class ProcessModalComponent implements OnInit {
     }
   }
 
+  ngAfterViewInit(): void {
+    // show the modal when component is rendered
+    setTimeout(() => this.processModal?.show());
+  }
+
   submit(): void {
     if (this.form.invalid) return;
     const fv = this.form.value;
@@ -53,16 +60,19 @@ export class ProcessModalComponent implements OnInit {
 
     if (this.isEdit && this.process && this.process.id) {
       this.processService.updateProcess(this.process.id, payload).subscribe(() => {
+        this.processModal?.hide();
         this.saved.emit();
       });
     } else {
       this.processService.createProcess(payload).subscribe(() => {
+        this.processModal?.hide();
         this.saved.emit();
       });
     }
   }
 
   doCancel(): void {
+    this.processModal?.hide();
     this.cancel.emit();
   }
 }

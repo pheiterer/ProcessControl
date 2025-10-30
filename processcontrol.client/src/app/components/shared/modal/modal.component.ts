@@ -20,7 +20,7 @@ declare var bootstrap: any;
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="onSecondary()">{{ secondaryText }}</button>
-          <button type="button" [ngClass]="['btn', primaryClass]" (click)="onPrimary()">{{ primaryText }}</button>
+          <button type="button" [ngClass]="['btn', primaryClass]" (click)="onPrimary()" [disabled]="primaryDisabled">{{ primaryText }}</button>
         </div>
       </div>
     </div>
@@ -34,6 +34,7 @@ export class ModalComponent implements AfterViewInit {
   @Input() primaryClass = 'btn-primary';
   @Input() secondaryText = 'Cancelar';
   @Input() showClose = true;
+  @Input() primaryDisabled = false;
 
   @Output() primary = new EventEmitter<void>();
   @Output() secondary = new EventEmitter<void>();

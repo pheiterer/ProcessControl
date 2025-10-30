@@ -27,6 +27,7 @@ export class ProcessDetailComponent implements OnInit {
   // pending delete for movement confirmation modal
   pendingDeleteMovementId: number | null = null;
   @ViewChild('confirmMovementModal') confirmMovementModal!: ModalComponent;
+  @ViewChild(MovementFormComponent) movementFormComp?: MovementFormComponent;
   // loading flags
   isLoadingProcess = false;
   isLoadingHistorico = false;

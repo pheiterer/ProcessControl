@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+/* Smooth fade-in / fade-out for Bootstrap modals and backdrops */
+.modal.fade .modal-dialog {
+	transform: translateY(-20px);
+	opacity: 0;
+	transition: transform 280ms cubic-bezier(.4,0,.2,1), opacity 200ms linear;
+}
+.modal.show .modal-dialog {
+	transform: translateY(0);
+	opacity: 1;
+}
+.modal-backdrop {
+	opacity: 0;
+	transition: opacity 200ms linear;
+}
+.modal-backdrop.show {
+	opacity: 0.5; /* default bootstrap backdrop opacity */
+}
+
+/* Improve stacking/visibility when using our embedded modal component */
+.modal {
+	/* hide modal by default; Bootstrap toggles the 'show' class when visible */
+	display: none;
+	pointer-events: none;
+	visibility: hidden;
+}
+.modal.show {
+	display: block;
+	pointer-events: auto;
+	visibility: visible;
+}
+
+/* Backdrop should only block pointer events when visible */
+.modal-backdrop {
+	display: none;
+	pointer-events: none;
+}
+.modal-backdrop.show {
+	display: block;
+	pointer-events: auto;
+}

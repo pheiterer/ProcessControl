@@ -1,22 +1,8 @@
-<div class="modal fade" id="movementFormModal" tabindex="-1" aria-labelledby="movementFormModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="movementFormModalLabel">Adicionar Movimentação</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="movementForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label for="descricao" class="form-label">Descrição</label>
-            <textarea class="form-control" id="descricao" formControlName="descricao" rows="3"></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            <button type="submit" class="btn btn-primary" [disabled]="!movementForm.valid">Salvar</button>
-          </div>
-        </form>
-      </div>
+<app-modal #movementModal title="Adicionar Movimentação" primaryText="Salvar" primaryClass="btn-primary" secondaryText="Fechar" [primaryDisabled]="!movementForm.valid" (primary)="onSubmit()">
+  <form [formGroup]="movementForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="descricao" class="form-label">Descrição</label>
+      <textarea class="form-control" id="descricao" formControlName="descricao" rows="3"></textarea>
     </div>
-  </div>
-</div>
+  </form>
+</app-modal>
