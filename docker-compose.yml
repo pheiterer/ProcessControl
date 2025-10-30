@@ -7,8 +7,8 @@ services:
     restart: always
     environment:
       - POSTGRES_DB=processcontroldb
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     networks:
@@ -22,7 +22,7 @@ services:
     restart: always
     environment:
       - DB_HOST=db
-      - ConnectionStrings__DefaultConnection=Host=db;Database=processcontroldb;Username=user;Password=password
+      - ConnectionStrings__DefaultConnection=Host=db;Database=processcontroldb;Username=admin;Password=admin
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
     depends_on:
