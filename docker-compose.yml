@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: process-control-db
+    restart: always
+    environment:
+      - POSTGRES_DB=processcontroldb
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - process-control-network
+
+  backend:
+    container_name: process-control-backend
+    build:
+      context: .
+      dockerfile: ./ProcessControl.Server/Dockerfile
+    restart: always
+    environment:
+      - DB_HOST=db
+      - ConnectionStrings__DefaultConnection=Host=db;Database=processcontroldb;Username=user;Password=password
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      - db
+    networks:
+      - process-control-network
+
+  frontend:
+    container_name: process-control-frontend
+    build:
+      context: ./processcontrol.client
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - process-control-network
+
+networks:
+  process-control-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

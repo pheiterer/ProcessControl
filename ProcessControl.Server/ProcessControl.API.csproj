@@ -40,9 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\processcontrol.client\processcontrol.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
+
     <ProjectReference Include="ProcessControl.Application\ProcessControl.Application.csproj" />
     <ProjectReference Include="ProcessControl.Domain\ProcessControl.Domain.csproj" />
     <ProjectReference Include="ProcessControl.Infrastructure\ProcessControl.Infrastructure.csproj" />

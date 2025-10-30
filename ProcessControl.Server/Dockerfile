@@ -1,38 +1,19 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-
-# This stage is used to build the service project
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS with-node
-RUN apt-get update
-RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
-RUN apt-get -y install nodejs
-RUN npm install -g @angular/cli
-
-FROM with-node AS build
-ARG BUILD_CONFIGURATION=Release
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["ProcessControl.Server/ProcessControl.Server.csproj", "ProcessControl.Server/"]
-COPY ["processcontrol.client/processcontrol.client.esproj", "processcontrol.client/"]
-RUN dotnet restore "./ProcessControl.Server/ProcessControl.Server.csproj"
+
+# Copy the entire solution directory
 COPY . .
-WORKDIR "/src/ProcessControl.Server"
-RUN dotnet build "./ProcessControl.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# This stage is used to publish the service project to be copied to the final stage
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ProcessControl.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Restore dependencies
+RUN dotnet restore ProcessControl.sln
 
-# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
-FROM base AS final
+# Build and publish the application
+WORKDIR /src/ProcessControl.Server
+RUN dotnet publish "ProcessControl.API.csproj" -c Release -o /app/publish
+
+# Stage 2: Final image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ProcessControl.Server.dll"]
+COPY --from=build /app/publish .
+ENTRYPOINT ["dotnet", "ProcessControl.API.dll"]
