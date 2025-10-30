@@ -59,10 +59,12 @@ export class ProcessService {
       );
   }
 
-  getMovements(processId: number): Observable<ProcessHistory[]> {
-    return this.http
-      .get<ProcessHistory[]>(`${this.apiUrl}/${processId}/historicos`)
-      .pipe(catchError((err) => this.handleError(err)));
+  /**
+   * Get movements (historico) for a process — default to page 1/limit 20 if not specified.
+   */
+  getMovements(processId: number, page = 1, limit = 10): Observable<ProcessHistory[]> {
+    const url = `${this.apiUrl}/${processId}/historicos?page=${page}&limit=${limit}`;
+    return this.http.get<ProcessHistory[]>(url).pipe(catchError((err) => this.handleError(err)));
   }
 
   createMovement(processId: number, movement: { descricao: string }): Observable<any> {
