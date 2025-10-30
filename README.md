@@ -1,3 +1,6 @@
+<h3 align="center"><img width="150" height="150" alt="imagem_2025-10-30_123301871" src="https://github.com/user-attachments/assets/d7c3762e-7d8d-42a4-b327-e6faf174ecbd" /></h3>
+
+
 # Process Control Application
 
 This project consists of a .NET backend API, an Angular frontend, and a PostgreSQL database, all orchestrated using Docker Compose.
