@@ -80,4 +80,4 @@
   <p>Carregando...</p>
 </div>
 
-<app-movement-form #movementFormComp *ngIf="process" [processId]="process.id" (movementSaved)="loadHistorico(process.id)" (movementAdded)="loadHistorico(process.id)"></app-movement-form>
+<app-movement-form #movementFormComp *ngIf="process" [processId]="process.id" (movementSaved)="loadHistorico(process.id, 1, true)" (movementAdded)="loadHistorico(process.id, 1, true)"></app-movement-form>
