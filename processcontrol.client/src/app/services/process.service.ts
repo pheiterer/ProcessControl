@@ -33,8 +33,8 @@ export class ProcessService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  addMovement(processId: number, movement: { descricao: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${processId}/historicos`, movement);
+  addMovement(processId: number, movement: { descricao: string }): Observable<ProcessHistory[]> {
+    return this.http.post<ProcessHistory[]>(`${this.apiUrl}/${processId}/historicos`, movement);
   }
 
   getMovements(processId: number): Observable<ProcessHistory[]> {

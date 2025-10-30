@@ -23,7 +23,6 @@ import { ProcessModel, ProcessStatus, ProcessStatusText } from '../../models/pro
 export class ProcessModalComponent implements OnInit, AfterViewInit {
   @Input() process?: ProcessModel | null;
   @Output() saved = new EventEmitter<void>();
-  // avoid using the native DOM event name 'cancel' as an output binding
   @Output() canceled = new EventEmitter<void>();
 
   form: FormGroup;
@@ -36,7 +35,6 @@ export class ProcessModalComponent implements OnInit, AfterViewInit {
     private processService: ProcessService
   ) {
     this.form = this.fb.group({
-      // limits: numeroProcesso (max 50), autor (max 100), reu (max 100)
       numeroProcesso: ['', [Validators.required, Validators.maxLength(50)]],
       autor: ['', [Validators.required, Validators.maxLength(100)]],
       reu: ['', [Validators.required, Validators.maxLength(100)]],
@@ -66,7 +64,6 @@ export class ProcessModalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // show the modal when component is rendered
     setTimeout(() => this.processModal?.show());
   }
 

@@ -18,18 +18,19 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   searchTerm = '';
   searchControl: FormControl;
   private searchSub?: Subscription;
-  // modal state for process modal component
   modalVisible = false;
   modalToEdit?: ProcessModel | null;
-  // pending delete state for confirmation modal
   pendingDeleteProcessId: number | null = null;
 
   @ViewChild('confirmProcessModal') confirmProcessModal!: ModalComponent;
-  // paging / infinite scroll
   pageSize = 20;
-  currentPage = 0; // 0 means not loaded yet
+  currentPage = 0;
   isLoading = false;
   hasMore = true;
+
+  // local sorting state
+  sortColumn: string | null = null;
+  sortAscending = true;
 
   constructor(
     private processService: ProcessService,
@@ -37,7 +38,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   ) {
     this.searchControl = new FormControl(this.searchTerm);
   }
-  // (no per-process modal state in the list; navigation opens the process page)
 
   ngOnInit(): void {
     this.loadPage(1);
@@ -45,7 +45,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.searchTerm = value || '';
-        // reset paging and reload
         this.currentPage = 0;
         this.hasMore = true;
         this.processes = [];
@@ -64,7 +63,10 @@ export class ProcessListComponent implements OnInit, OnDestroy {
         } else {
           this.processes = this.processes.concat(items);
         }
-        // movements are loaded on demand when the user opens a process
+        // apply local sort if active
+        if (this.sortColumn) {
+          this.applySort();
+        }
         this.currentPage = page;
         if (items.length < this.pageSize) {
           this.hasMore = false;
@@ -77,13 +79,59 @@ export class ProcessListComponent implements OnInit, OnDestroy {
     );
   }
 
+  sortBy(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortAscending = !this.sortAscending;
+    } else {
+      this.sortColumn = column;
+      this.sortAscending = true;
+    }
+    this.applySort();
+  }
+
+  private applySort(): void {
+    if (!this.sortColumn) return;
+    const col = this.sortColumn;
+    this.processes.sort((a, b) => {
+      const av = this.getSortableValue(a, col);
+      const bv = this.getSortableValue(b, col);
+      if (av == null && bv == null) return 0;
+      if (av == null) return this.sortAscending ? -1 : 1;
+      if (bv == null) return this.sortAscending ? 1 : -1;
+      let cmp = 0;
+      if (typeof av === 'number' && typeof bv === 'number') {
+        cmp = av - bv;
+      } else if (av instanceof Date && bv instanceof Date) {
+        cmp = av.getTime() - bv.getTime();
+      } else {
+        cmp = String(av).localeCompare(String(bv), undefined, { sensitivity: 'base' });
+      }
+      return this.sortAscending ? cmp : -cmp;
+    });
+  }
+
+  private getSortableValue(item: ProcessModel, column: string): string | number | Date | null {
+    switch (column) {
+      case 'numeroProcesso':
+        return item.numeroProcesso ?? '';
+      case 'autor':
+        return item.autor ?? '';
+      case 'reu':
+        return item.reu ?? '';
+      case 'dataAjuizamento':
+        return item.dataAjuizamento ?? null;
+      case 'status':
+        return typeof item.status === 'number' ? Number(item.status) : null;
+      default:
+        return '';
+    }
+  }
+
   editProcess(id: number): void {
-    // open edit modal instead of navigating
     this.openEdit(id);
   }
 
   deleteProcess(id: number): void {
-    // open confirmation modal instead of using browser confirm
     this.pendingDeleteProcessId = id;
     this.confirmProcessModal?.show();
   }
@@ -92,7 +140,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
     const id = this.pendingDeleteProcessId;
     if (!id) return;
     this.processService.deleteProcess(id).subscribe(() => {
-      // refresh from first page after delete
       this.currentPage = 0;
       this.hasMore = true;
       this.processes = [];
@@ -123,7 +170,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
       this.modalVisible = true;
       return;
     }
-    // fallback: load from server then open
     this.processService.getProcessById(id).subscribe((proc) => {
       this.modalToEdit = ProcessModel.fromDto(proc);
       this.modalVisible = true;
@@ -137,7 +183,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
 
   onModalSaved(): void {
     this.closeModal();
-    // refresh from first page
     this.currentPage = 0;
     this.hasMore = true;
     this.processes = [];
@@ -147,7 +192,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     if (this.isLoading || !this.hasMore) return;
-    const threshold = 300; // px
+    const threshold = 300;
     const position = window.innerHeight + window.scrollY;
     const height = document.documentElement.scrollHeight;
     if (position >= height - threshold) {
