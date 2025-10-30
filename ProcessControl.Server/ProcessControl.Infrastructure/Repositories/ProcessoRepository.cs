@@ -9,12 +9,12 @@ namespace ProcessControl.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IEnumerable<Processo>> GetProcessListAsync(int page, int limit, string? numeroProcesso)
+        public async Task<IEnumerable<Processo>> GetProcessListAsync(int page, int limit, string? searchTerm)
         {
             var query = _context.Processos.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(numeroProcesso))
-                query = query.Where(p => p.NumeroProcesso.Contains(numeroProcesso));
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                query = query.Where(p => p.NumeroProcesso.Contains(searchTerm));
 
             query = query
                 .OrderBy(p => p.Id)

@@ -5,11 +5,11 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class ProcessoService(IProcessoRepository processoRepository) : IProcessoService
+    public sealed class ProcessoService(IProcessoRepository processRepository) : IProcessoService
     {
-        private readonly IProcessoRepository _processoRepository = processoRepository;
+        private readonly IProcessoRepository _processRepository = processRepository;
 
-        public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? numeroProcesso)
+        public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? searchTerm)
         {
             const int defaultLimit = 10;
             const int maxLimit = 50;
@@ -21,7 +21,7 @@ namespace ProcessControl.Application.Services
                 ? Math.Min(limit.Value, maxLimit)
                 : defaultLimit;
 
-            var processos = await _processoRepository.GetProcessListAsync(page, pageSize, numeroProcesso);
+            var processos = await _processRepository.GetProcessListAsync(page, pageSize, searchTerm);
 
             return processos.Select(p => new ProcessoDto
             {
@@ -37,7 +37,7 @@ namespace ProcessControl.Application.Services
 
         public async Task<ProcessoDto?> GetProcessoByIdAsync(int id)
         {
-            var processo = await _processoRepository.GetByIdAsync(id);
+            var processo = await _processRepository.GetByIdAsync(id);
             if (processo == null) return null;
 
             return new ProcessoDto
@@ -64,7 +64,7 @@ namespace ProcessControl.Application.Services
                 Status = StatusProcesso.EmAndamento
             };
 
-            await _processoRepository.AddAsync(processo);
+            await _processRepository.AddAsync(processo);
 
             return new ProcessoDto
             {
@@ -80,7 +80,7 @@ namespace ProcessControl.Application.Services
 
         public async Task UpdateProcessoAsync(int id, UpdateProcessoDto updateProcessoDto)
         {
-            var processo = await _processoRepository.GetByIdAsync(id);
+            var processo = await _processRepository.GetByIdAsync(id);
             if (processo == null) return;
 
             processo.NumeroProcesso = updateProcessoDto.NumeroProcesso;
@@ -89,12 +89,12 @@ namespace ProcessControl.Application.Services
             processo.Status = updateProcessoDto.Status;
             processo.Descricao = updateProcessoDto.Descricao;
 
-            await _processoRepository.UpdateAsync(processo);
+            await _processRepository.UpdateAsync(processo);
         }
 
         public async Task DeleteProcessoAsync(int id)
         {
-            await _processoRepository.DeleteAsync(id);
+            await _processRepository.DeleteAsync(id);
         }
     }
 }
