@@ -39,3 +39,82 @@
 	display: block;
 	pointer-events: auto;
 }
+
+/* Theme variables */
+:root {
+	--brand-blue: #0b3d91; /* dark blue */
+	--brand-blue-contrast: #ffffff;
+	--brand-blue-hover: #072b67;
+	--muted-shadow: 0 6px 18px rgba(11,61,145,0.12);
+}
+
+/* Page background: subtle light-blue gradient */
+body {
+	background: linear-gradient(180deg, #eaf3ff 0%, #f5fbff 60%, #ffffff 100%);
+	background-attachment: fixed;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Make main content area slightly elevated on the gradient */
+main {
+	background: transparent;
+}
+
+/* Primary buttons (brand) */
+.btn-primary {
+	background-color: var(--brand-blue) !important;
+	border-color: var(--brand-blue) !important;
+	color: var(--brand-blue-contrast) !important;
+	transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+}
+.btn-primary:hover, .btn-primary:focus {
+	background-color: var(--brand-blue-hover) !important;
+	border-color: var(--brand-blue-hover) !important;
+	box-shadow: var(--muted-shadow);
+	transform: translateY(-2px);
+}
+
+/* Secondary buttons subtle effect */
+.btn-secondary:hover, .btn-secondary:focus {
+	transform: translateY(-1px);
+}
+
+/* Rounded and styled tables */
+.table {
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 10px;
+	overflow: hidden;
+}
+.table thead th {
+	background-color: var(--brand-blue);
+	color: var(--brand-blue-contrast);
+	border: none;
+}
+.table tbody tr {
+	transition: background-color 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+}
+.table tbody tr:hover {
+	background-color: rgba(11,61,145,0.04);
+	transform: translateY(-2px);
+	box-shadow: var(--muted-shadow);
+}
+
+/* Make action buttons small and rounded */
+.btn-sm {
+	border-radius: 6px;
+}
+
+/* Navbar theming */
+.navbar.bg-dark, .navbar-dark.bg-dark {
+	background-color: var(--brand-blue) !important;
+	box-shadow: 0 4px 12px rgba(11,61,145,0.12);
+}
+.navbar .navbar-brand, .navbar .nav-link {
+	color: var(--brand-blue-contrast) !important;
+}
+.navbar .nav-link:hover, .navbar .navbar-brand:hover {
+	color: #e6eefc !important;
+}
+

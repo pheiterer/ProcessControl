@@ -17,27 +17,35 @@
 
 /* Limit description column width and preserve newlines */
 .table.table-sm td.descricao {
-		max-width: 100ch; /* limit width to ~60 characters for compact tables */
-		white-space: pre-wrap; /* keep line breaks */
+	max-width: 100ch; /* limit width to ~100 characters for compact tables */
+	white-space: pre-wrap; /* keep line breaks */
 }
 
 /* Use percentage widths for historico columns on the detail page */
+/* Card table percentage layout */
 .card .table {
-		table-layout: fixed; /* ensure percentages are honored */
+	table-layout: fixed; /* ensure percentages are honored */
+	border-radius: 10px;
+	overflow: hidden;
+}
+.card .table thead th {
+	background-color: var(--brand-blue);
+	color: var(--brand-blue-contrast);
+	border: none;
 }
 .card .table th:nth-child(1),
 .card .table td:nth-child(1) {
-		width: 60%; /* descrição */
+	width: 60%; /* descrição */
 }
 .card .table th:nth-child(2),
 .card .table td:nth-child(2),
 .card .table th:nth-child(3),
 .card .table td:nth-child(3) {
-		width: 15%; /* data inclusão / alteração */
+	width: 15%; /* data inclusão / alteração */
 }
 .card .table th:nth-child(4),
 .card .table td:nth-child(4) {
-		width: 20%; /* ações */
+	width: 20%; /* ações */
 }
 
 /* Keep wrapping and preserve newlines for description cell */
