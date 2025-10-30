@@ -1,7 +1,10 @@
 <div class="container mt-4" *ngIf="process">
   <div class="card">
     <div class="card-header">
-      <h2>Detalhes do Processo</h2>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>Detalhes do Processo</h2>
+        <button class="btn btn-sm btn-outline-primary" (click)="openEdit()">Editar</button>
+      </div>
     </div>
     <div class="card-body">
       <div class="row">
@@ -12,12 +15,14 @@
         </div>
         <div class="col-md-6">
           <p><strong>Data de Ajuizamento:</strong> {{ process.dataAjuizamento | date:'dd/MM/yyyy' }}</p>
-          <p><strong>Status:</strong> {{ process.status }}</p>
+          <p><strong>Status:</strong> {{ process.statusText }}</p>
         </div>
       </div>
       <p><strong>Descrição:</strong> {{ process.descricao }}</p>
     </div>
   </div>
+
+  <app-process-modal *ngIf="modalVisible" [process]="process" (saved)="onModalSaved()" (cancel)="closeModal()"></app-process-modal>
 
   <div class="card mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">

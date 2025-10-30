@@ -1,0 +1,45 @@
+<div class="modal-backdrop fade show"></div>
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ isEdit ? 'Editar Processo' : 'Novo Processo' }}</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="doCancel()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-2">
+            <label class="form-label">Número do processo</label>
+            <input class="form-control" formControlName="numeroProcesso" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Autor</label>
+            <input class="form-control" formControlName="autor" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Réu</label>
+            <input class="form-control" formControlName="reu" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Data de ajuizamento</label>
+            <input type="date" class="form-control" formControlName="dataAjuizamento" />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Status</label>
+            <select class="form-select" formControlName="status">
+              <option *ngFor="let s of statusOptions" [ngValue]="s.value">{{ s.label }}</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Descrição</label>
+            <textarea class="form-control" rows="3" formControlName="descricao"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="doCancel()">Cancelar</button>
+          <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,11 @@
+.modal-backdrop {
+  z-index: 1040;
+}
+.modal {
+  z-index: 1050;
+}
+
+/* small nicety */
+.modal-body .form-control, .modal-body .form-select {
+  min-width: 0;
+}

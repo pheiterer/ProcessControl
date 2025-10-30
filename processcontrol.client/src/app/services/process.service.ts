@@ -7,12 +7,14 @@ import { Process } from '../models/process.model';
   providedIn: 'root'
 })
 export class ProcessService {
-  private apiUrl = '/api/Processos'; // Adjust if your API endpoint is different
+  private apiUrl = '/api/Processos';
 
   constructor(private http: HttpClient) { }
 
-  getProcesses(filter: string = ''): Observable<Process[]> {
-    return this.http.get<Process[]>(`${this.apiUrl}?search=${filter}`);
+  // searchTerm first (optional), then page and limit
+  getProcesses(searchTerm: string = '', page: number = 1, limit: number = 10): Observable<Process[]> {
+    const url = `${this.apiUrl}?search=${encodeURIComponent(searchTerm)}&page=${page}&limit=${limit}`;
+    return this.http.get<Process[]>(url);
   }
 
   getProcessById(id: number): Observable<Process> {
