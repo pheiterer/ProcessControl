@@ -5,11 +5,11 @@ WORKDIR /src
 # Copy the entire solution directory
 COPY . .
 
-# Restore dependencies
-RUN dotnet restore ProcessControl.sln
-
 # Build and publish the application
 WORKDIR /src/ProcessControl.Server
+
+# Restore dependencies
+RUN dotnet restore ProcessControl.Server.sln
 RUN dotnet publish "ProcessControl.API.csproj" -c Release -o /app/publish
 
 # Stage 2: Final image
