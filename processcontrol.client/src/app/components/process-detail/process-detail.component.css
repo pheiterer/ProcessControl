@@ -17,8 +17,41 @@
 
 /* Limit description column width and preserve newlines */
 .table.table-sm td.descricao {
-	max-width: 60ch; /* limit width to ~60 characters */
-	white-space: pre-wrap; /* keep line breaks */
+		max-width: 100ch; /* limit width to ~60 characters for compact tables */
+		white-space: pre-wrap; /* keep line breaks */
+}
+
+/* Use percentage widths for historico columns on the detail page */
+.card .table {
+		table-layout: fixed; /* ensure percentages are honored */
+}
+.card .table th:nth-child(1),
+.card .table td:nth-child(1) {
+		width: 60%; /* descrição */
+}
+.card .table th:nth-child(2),
+.card .table td:nth-child(2),
+.card .table th:nth-child(3),
+.card .table td:nth-child(3) {
+		width: 15%; /* data inclusão / alteração */
+}
+.card .table th:nth-child(4),
+.card .table td:nth-child(4) {
+		width: 20%; /* ações */
+}
+
+/* Keep wrapping and preserve newlines for description cell */
+.card .table td.descricao {
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+}
+
+/* Adjust percentages for very small screens to keep layout tidy */
+@media (max-width: 575.98px) {
+	.card .table th:nth-child(1), .card .table td:nth-child(1) { width: 55%; }
+	.card .table th:nth-child(2), .card .table td:nth-child(2) { width: 15%; }
+	.card .table th:nth-child(3), .card .table td:nth-child(3) { width: 15%; }
+	.card .table th:nth-child(4), .card .table td:nth-child(4) { width: 15%; }
 }
 
 /* Textareas should not expand horizontally and only resize vertically */

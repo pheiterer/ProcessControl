@@ -6,3 +6,22 @@
 .btn-sm i {
   margin-right: 4px;
 }
+
+/* Prevent layout break when a cell contains very long unbroken text */
+.table {
+  table-layout: fixed; /* force cells to respect widths and enable wrapping */
+}
+.table th, .table td {
+  white-space: normal; /* allow wrapping */
+  overflow-wrap: anywhere; /* break long words if needed */
+  word-break: break-word;
+}
+
+/* Optionally limit width of description-like columns (adjust if needed) */
+.table td:nth-child(1), .table th:nth-child(1) {
+  max-width: 24ch;
+}
+.table td:nth-child(2), .table th:nth-child(2),
+.table td:nth-child(3), .table th:nth-child(3) {
+  max-width: 30ch;
+}

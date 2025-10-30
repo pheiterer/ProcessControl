@@ -22,9 +22,10 @@ export class ProcessModalComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private processService: ProcessService) {
     this.form = this.fb.group({
-      numeroProcesso: ['', Validators.required],
-      autor: ['', Validators.required],
-      reu: ['', Validators.required],
+      // limits: numeroProcesso (max 50), autor (max 100), reu (max 100)
+      numeroProcesso: ['', [Validators.required, Validators.maxLength(50)]],
+      autor: ['', [Validators.required, Validators.maxLength(100)]],
+      reu: ['', [Validators.required, Validators.maxLength(100)]],
       dataAjuizamento: ['', Validators.required],
       status: [ProcessStatus.EmAndamento, Validators.required],
       descricao: ['']
