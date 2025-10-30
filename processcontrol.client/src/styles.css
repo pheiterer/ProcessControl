@@ -61,6 +61,70 @@ main {
 	background: transparent;
 }
 
+/* Responsive stacked table for small screens (scoped to .responsive-table) */
+@media (max-width: 767.98px) {
+  .responsive-table {
+    display: block;
+    width: 100%;
+  }
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tbody {
+    display: block;
+  }
+  .responsive-table tr {
+    display: block;
+    margin-bottom: 0.75rem;
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 6px 18px rgba(11,61,145,0.04);
+  }
+  .responsive-table td {
+    display: block;
+    padding: 0.5rem 0.5rem;
+    border: none;
+  }
+  .responsive-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 800;
+    color: rgba(0,0,0,0.65);
+    margin-bottom: 0.25rem;
+  }
+  .responsive-table td.descricao::before {
+    /* description label spacing */
+    margin-bottom: 0.25rem;
+  }
+  .responsive-table td .btn {
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  /* When a table is using the responsive-table helper we want each
+     cell to be a full-width block inside the stacked card. */
+  .responsive-table {
+    table-layout: auto; /* allow natural sizing when stacked */
+    width: 100%;
+  }
+  .responsive-table td {
+    display: block;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  /* Keep action buttons inline within the cell but not overflowing */
+  .responsive-table td .btn {
+    display: inline-block;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+    white-space: nowrap;
+  }
+}
+
 /* Primary buttons (brand) */
 .btn-primary {
 	background-color: var(--brand-blue) !important;

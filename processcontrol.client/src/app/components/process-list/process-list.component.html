@@ -1,7 +1,8 @@
 <!-- header removed; New button moved next to search -->
 
 <!-- modal component -->
-<app-process-modal *ngIf="modalVisible" [process]="modalToEdit" (saved)="onModalSaved()" (cancel)="closeModal()"></app-process-modal>
+<app-process-modal *ngIf="modalVisible" [process]="modalToEdit" (saved)="onModalSaved()" (cancel)="closeModal()">
+</app-process-modal>
 
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
@@ -9,19 +10,23 @@
   </div>
 
   <div class="row mb-3 align-items-center">
-    <div class="col-md-8">
-      <div class="input-group">
-        <input type="text" class="form-control" placeholder="Pesquisar por número do processo..." [formControl]="searchControl" maxlength="50">
-      </div>
+    <div class="col-12 col-md-8 d-flex align-items-center">
+      <input type="text" class="form-control me-2 flex-grow-1" placeholder="Pesquisar por número do processo..."
+        [formControl]="searchControl" maxlength="50">
+      <!-- Small-screen inline button -->
+      <button class="btn btn-primary d-md-none" type="button" (click)="openNew()">
+        <i class="bi bi-plus-lg"></i>
+      </button>
     </div>
-    <div class="col-md-4 d-flex justify-content-end">
-      <button class="btn btn-primary" type="button" (click)="openNew()">
+    <div class="col-12 col-md-4 d-flex justify-content-md-end mt-2 mt-md-0">
+      <!-- Desktop / md+ button (hidden on small screens) -->
+      <button class="btn btn-primary d-none d-md-inline-flex" type="button" (click)="openNew()">
         <i class="bi bi-plus-lg"></i> Novo Processo
       </button>
     </div>
   </div>
 
-  <table class="table table-striped table-hover">
+  <table class="table table-striped table-hover responsive-table">
     <thead class="table-dark">
       <tr>
         <th>Número do Processo</th>
@@ -34,22 +39,23 @@
     </thead>
     <tbody>
       <ng-container *ngFor="let process of processes">
-  <tr (click)="viewProcess(process.id)" style="cursor: pointer;">
-        <td>{{ process.numeroProcesso }}</td>
-        <td>{{ process.autor }}</td>
-        <td>{{ process.reu }}</td>
-        <td>{{ process.dataAjuizamento | date:'dd/MM/yyyy' }}</td>
-        <td>{{ process.statusText }}</td>
-        <td class="text-center">
-          <button class="btn btn-sm btn-outline-primary me-2" (click)="editProcess(process.id); $event.stopPropagation()">
-            <i class="bi bi-pencil-fill"></i> Editar
-          </button>
-          <button class="btn btn-sm btn-outline-danger" (click)="deleteProcess(process.id); $event.stopPropagation()">
-            <i class="bi bi-trash-fill"></i> Excluir
-          </button>
-        </td>
-      </tr>
-      
+        <tr (click)="viewProcess(process.id)" style="cursor: pointer;">
+          <td data-label="Número do Processo">{{ process.numeroProcesso }}</td>
+          <td data-label="Autor">{{ process.autor }}</td>
+          <td data-label="Réu">{{ process.reu }}</td>
+          <td data-label="Data de Ajuizamento">{{ process.dataAjuizamento | date:'dd/MM/yyyy' }}</td>
+          <td data-label="Status">{{ process.statusText }}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-outline-primary"
+              (click)="editProcess(process.id); $event.stopPropagation()">
+              <i class="bi bi-pencil-fill"></i> Editar
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="deleteProcess(process.id); $event.stopPropagation()">
+              <i class="bi bi-trash-fill"></i> Excluir
+            </button>
+          </td>
+        </tr>
+
       </ng-container>
 
       <tr *ngIf="processes.length === 0">
@@ -57,7 +63,7 @@
       </tr>
     </tbody>
   </table>
-    <!-- process details are shown on the process page; list only navigates to that page -->
+  <!-- process details are shown on the process page; list only navigates to that page -->
   <div class="text-center my-3" *ngIf="isLoading">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Carregando...</span>
@@ -68,6 +74,7 @@
   </div>
 </div>
 
-<app-modal #confirmProcessModal title="Confirmar exclusão" primaryText="Excluir" primaryClass="btn-danger" secondaryText="Cancelar" (primary)="confirmDeleteProcess()">
+<app-modal #confirmProcessModal title="Confirmar exclusão" primaryText="Excluir" primaryClass="btn-danger"
+  secondaryText="Cancelar" (primary)="confirmDeleteProcess()">
   Tem certeza que deseja excluir este processo?
 </app-modal>
