@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+declare var bootstrap: any;
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { ProcessModel } from '../../models/process.model';
@@ -20,6 +21,8 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   // modal state for process modal component
   modalVisible = false;
   modalToEdit?: ProcessModel | null;
+  // pending delete state for confirmation modal
+  pendingDeleteProcessId: number | null = null;
   // paging / infinite scroll
   pageSize = 20;
   currentPage = 0; // 0 means not loaded yet
@@ -32,6 +35,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   ) {
     this.searchControl = new FormControl(this.searchTerm);
   }
+  // (no per-process modal state in the list; navigation opens the process page)
 
   ngOnInit(): void {
     this.loadPage(1);
@@ -58,6 +62,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
       } else {
         this.processes = this.processes.concat(items);
       }
+      // movements are loaded on demand when the user opens a process
       this.currentPage = page;
       if (items.length < this.pageSize) {
         this.hasMore = false;
@@ -74,15 +79,32 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   }
 
   deleteProcess(id: number): void {
-    if (confirm('Tem certeza que deseja excluir este processo?')) {
-      this.processService.deleteProcess(id).subscribe(() => {
-        // refresh from first page after delete
-        this.currentPage = 0;
-        this.hasMore = true;
-        this.processes = [];
-        this.loadPage(1);
-      });
+    // open confirmation modal instead of using browser confirm
+    this.pendingDeleteProcessId = id;
+    const modalEl = document.getElementById('confirmDeleteProcessModal');
+    if (modalEl) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.show();
     }
+  }
+
+  confirmDeleteProcess(): void {
+    const id = this.pendingDeleteProcessId;
+    if (!id) return;
+    this.processService.deleteProcess(id).subscribe(() => {
+      // refresh from first page after delete
+      this.currentPage = 0;
+      this.hasMore = true;
+      this.processes = [];
+      this.loadPage(1);
+      // hide modal
+      const modalEl = document.getElementById('confirmDeleteProcessModal');
+      if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+      }
+      this.pendingDeleteProcessId = null;
+    });
   }
 
   viewProcess(id: number): void {

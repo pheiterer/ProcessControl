@@ -18,7 +18,6 @@ export interface Process {
   dataAjuizamento: Date | null;
   status: ProcessStatus | number;
   descricao: string;
-  historico: ProcessHistory[];
 }
 
 export class ProcessModel implements Process {
@@ -30,7 +29,6 @@ export class ProcessModel implements Process {
     public dataAjuizamento: Date | null,
     public status: ProcessStatus | number,
     public descricao: string,
-    public historico: ProcessHistory[]
   ) { }
 
   get statusText(): string {
@@ -45,8 +43,7 @@ export class ProcessModel implements Process {
       dto.reu,
       dto.dataAjuizamento ? new Date(dto.dataAjuizamento) : null,
       dto.status,
-      dto.descricao,
-      dto.historico || []
+      dto.descricao
     );
   }
 }

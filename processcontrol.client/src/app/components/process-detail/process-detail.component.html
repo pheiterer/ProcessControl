@@ -1,4 +1,4 @@
-<div class="container mt-4" *ngIf="process">
+<div class="container mt-4" *ngIf="isLoadingProcess || process">
   <div class="card">
     <div class="card-header">
       <div class="d-flex justify-content-between align-items-center">
@@ -7,20 +7,46 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row">
-        <div class="col-md-6">
-          <p><strong>Número do Processo:</strong> {{ process.numeroProcesso }}</p>
-          <p><strong>Autor:</strong> {{ process.autor }}</p>
-          <p><strong>Réu:</strong> {{ process.reu }}</p>
-        </div>
-        <div class="col-md-6">
-          <p><strong>Data de Ajuizamento:</strong> {{ process.dataAjuizamento | date:'dd/MM/yyyy' }}</p>
-          <p><strong>Status:</strong> {{ process.statusText }}</p>
+      <div *ngIf="isLoadingProcess" class="text-center py-4">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando processo...</span>
         </div>
       </div>
-      <p><strong>Descrição:</strong> {{ process.descricao }}</p>
+      <div *ngIf="!isLoadingProcess">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Número do Processo:</strong> {{ process?.numeroProcesso }}</p>
+            <p><strong>Autor:</strong> {{ process?.autor }}</p>
+            <p><strong>Réu:</strong> {{ process?.reu }}</p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Data de Ajuizamento:</strong> {{ process?.dataAjuizamento | date:'dd/MM/yyyy' }}</p>
+            <p><strong>Status:</strong> {{ process?.statusText }}</p>
+          </div>
+        </div>
+        <p><strong>Descrição:</strong> {{ process?.descricao }}</p>
+      </div>
     </div>
   </div>
+
+    <!-- confirmation modal for deleting a movement -->
+    <div class="modal fade" id="confirmDeleteMovementModal" tabindex="-1" aria-labelledby="confirmDeleteMovementModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmDeleteMovementModalLabel">Confirmar exclusão</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+            Tem certeza que deseja excluir esta movimentação?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" (click)="confirmDeleteMovement()">Excluir</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   <app-process-modal *ngIf="modalVisible" [process]="process" (saved)="onModalSaved()" (cancel)="closeModal()"></app-process-modal>
 
@@ -30,31 +56,50 @@
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movementFormModal">Adicionar Movimentação</button>
     </div>
     <div class="card-body">
-      <table class="table table-striped">
+      <div *ngIf="isLoadingHistorico" class="text-center py-4">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Carregando histórico...</span>
+        </div>
+      </div>
+      <table *ngIf="!isLoadingHistorico" class="table table-striped">
         <thead>
           <tr>
             <th>Descrição</th>
             <th>Data de Inclusão</th>
             <th>Data de Alteração</th>
+            <th class="text-end">Ações</th>
           </tr>
         </thead>
-        <tbody>
-          <tr *ngFor="let item of process.historico">
-            <td>{{ item.descricao }}</td>
-            <td>{{ item.dataInclusao | date:'dd/MM/yyyy' }}</td>
-            <td>{{ item.dataAlteracao | date:'dd/MM/yyyy' }}</td>
-          </tr>
-          <tr *ngIf="!process.historico || process.historico.length === 0">
-            <td colspan="3" class="text-center">Nenhum histórico encontrado.</td>
-          </tr>
-        </tbody>
+          <tbody>
+            <tr *ngFor="let item of historico">
+              <td class="descricao" *ngIf="editingMovementId !== item.id">{{ item.descricao }}</td>
+              <td class="descricao" *ngIf="editingMovementId === item.id">
+                <textarea class="form-control" [(ngModel)]="editingMovementText" rows="2"></textarea>
+              </td>
+              <td>{{ item.dataInclusao | date:'dd/MM/yyyy' }}</td>
+              <td>{{ item.dataAlteracao | date:'dd/MM/yyyy' }}</td>
+              <td class="text-end">
+                <div *ngIf="editingMovementId !== item.id">
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="startEditMovement(item)">Editar</button>
+                  <button class="btn btn-sm btn-outline-danger" (click)="deleteMovementConfirmed(item.id)">Excluir</button>
+                </div>
+                <div *ngIf="editingMovementId === item.id">
+                  <button class="btn btn-sm btn-primary me-2" (click)="saveEditMovement(item.id)">Salvar</button>
+                  <button class="btn btn-sm btn-secondary" (click)="cancelEditMovement()">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="!historico || historico.length === 0">
+              <td colspan="4" class="text-center">Nenhum histórico encontrado.</td>
+            </tr>
+          </tbody>
       </table>
     </div>
   </div>
 </div>
 
-<div *ngIf="!process" class="text-center mt-4">
+<div *ngIf="!process && !isLoadingProcess" class="text-center mt-4">
   <p>Carregando...</p>
 </div>
 
-<app-movement-form *ngIf="process" [processId]="process.id" (movementAdded)="loadProcess()"></app-movement-form>
+<app-movement-form *ngIf="process" [processId]="process.id" (movementAdded)="loadHistorico(process.id)"></app-movement-form>

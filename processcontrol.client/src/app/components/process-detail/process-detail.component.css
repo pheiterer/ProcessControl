@@ -1,0 +1,35 @@
+/* Prevent long descriptions from breaking the layout. */
+/* Apply layout rules to small tables and normal tables inside the card */
+.table.table-sm,
+.card .table {
+	table-layout: fixed; /* let columns respect max-width */
+	width: 100%;
+}
+
+.table.table-sm td,
+.table.table-sm th,
+.card .table td,
+.card .table th {
+	white-space: normal; /* allow wrapping */
+	word-break: break-word; /* break long words */
+	overflow-wrap: anywhere;
+}
+
+/* Limit description column width and preserve newlines */
+.table.table-sm td.descricao {
+	max-width: 60ch; /* limit width to ~60 characters */
+	white-space: pre-wrap; /* keep line breaks */
+}
+
+/* Textareas should not expand horizontally and only resize vertically */
+textarea.form-control {
+	width: 100%;
+	max-width: 100%;
+	resize: vertical;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+/* Small helpers for action buttons column */
+.table.table-sm td.text-end { white-space: nowrap; }
+

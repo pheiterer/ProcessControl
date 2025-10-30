@@ -26,7 +26,7 @@ export class MovementFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.movementForm.valid) {
-      this.processService.addMovement(this.processId, this.movementForm.value).subscribe(() => {
+      this.processService.createMovement(this.processId, this.movementForm.value).subscribe(() => {
         this.movementAdded.emit();
         this.movementForm.reset();
         const modalElement = document.getElementById('movementFormModal');

@@ -33,7 +33,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let process of processes" (click)="viewProcess(process.id)" style="cursor: pointer;">
+      <ng-container *ngFor="let process of processes">
+  <tr (click)="viewProcess(process.id)" style="cursor: pointer;">
         <td>{{ process.numeroProcesso }}</td>
         <td>{{ process.autor }}</td>
         <td>{{ process.reu }}</td>
@@ -48,11 +49,15 @@
           </button>
         </td>
       </tr>
+      
+      </ng-container>
+
       <tr *ngIf="processes.length === 0">
         <td colspan="6" class="text-center">Nenhum processo encontrado.</td>
       </tr>
     </tbody>
   </table>
+    <!-- process details are shown on the process page; list only navigates to that page -->
   <div class="text-center my-3" *ngIf="isLoading">
     <div class="spinner-border" role="status">
       <span class="visually-hidden">Carregando...</span>
@@ -60,5 +65,24 @@
   </div>
   <div class="text-center my-3 text-muted" *ngIf="!hasMore && !isLoading && processes.length>0">
     Fim dos resultados.
+  </div>
+</div>
+
+<!-- confirmation modal for deleting a process -->
+<div class="modal fade" id="confirmDeleteProcessModal" tabindex="-1" aria-labelledby="confirmDeleteProcessModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteProcessModalLabel">Confirmar exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        Tem certeza que deseja excluir este processo?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmDeleteProcess()">Excluir</button>
+      </div>
+    </div>
   </div>
 </div>
