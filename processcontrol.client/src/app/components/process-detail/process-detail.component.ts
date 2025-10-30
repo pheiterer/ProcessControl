@@ -21,7 +21,7 @@ export class ProcessDetailComponent implements OnInit {
   process: ProcessModel | undefined;
   modalVisible = false;
   historico: ProcessHistory[] = [];
-  // movement edit state
+  // movement edit state (legacy inline edit removed)
   editingMovementId: number | null = null;
   editingMovementText = '';
   // pending delete for movement confirmation modal

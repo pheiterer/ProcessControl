@@ -57,20 +57,13 @@
         </thead>
           <tbody>
             <tr *ngFor="let item of historico">
-              <td class="descricao" *ngIf="editingMovementId !== item.id">{{ item.descricao }}</td>
-              <td class="descricao" *ngIf="editingMovementId === item.id">
-                <textarea class="form-control" [(ngModel)]="editingMovementText" rows="2"></textarea>
-              </td>
+              <td class="descricao">{{ item.descricao }}</td>
               <td>{{ item.dataInclusao | date:'dd/MM/yyyy' }}</td>
               <td>{{ item.dataAlteracao | date:'dd/MM/yyyy' }}</td>
               <td class="text-end">
-                <div *ngIf="editingMovementId !== item.id">
-                  <button class="btn btn-sm btn-outline-primary me-2" (click)="startEditMovement(item)">Editar</button>
+                <div>
+                  <button class="btn btn-sm btn-outline-primary me-2" (click)="movementFormComp?.openForEdit(item)">Editar</button>
                   <button class="btn btn-sm btn-outline-danger" (click)="deleteMovementConfirmed(item.id)">Excluir</button>
-                </div>
-                <div *ngIf="editingMovementId === item.id">
-                  <button class="btn btn-sm btn-primary me-2" (click)="saveEditMovement(item.id)">Salvar</button>
-                  <button class="btn btn-sm btn-secondary" (click)="cancelEditMovement()">Cancelar</button>
                 </div>
               </td>
             </tr>
@@ -87,4 +80,4 @@
   <p>Carregando...</p>
 </div>
 
-<app-movement-form #movementFormComp *ngIf="process" [processId]="process.id" (movementAdded)="loadHistorico(process.id)"></app-movement-form>
+<app-movement-form #movementFormComp *ngIf="process" [processId]="process.id" (movementSaved)="loadHistorico(process.id)" (movementAdded)="loadHistorico(process.id)"></app-movement-form>

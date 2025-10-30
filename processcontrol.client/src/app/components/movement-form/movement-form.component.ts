@@ -15,8 +15,11 @@ declare var bootstrap: any;
 export class MovementFormComponent implements OnInit {
   @Input() processId!: number;
   @Output() movementAdded = new EventEmitter<void>();
+  @Output() movementSaved = new EventEmitter<void>();
   movementForm!: FormGroup;
   @ViewChild('movementModal') movementModal!: ModalComponent;
+  // optional movement being edited
+  editingMovementId: number | null = null;
 
   constructor(private fb: FormBuilder, private processService: ProcessService) { }
 
@@ -28,16 +31,36 @@ export class MovementFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.movementForm.valid) {
-      this.processService.createMovement(this.processId, this.movementForm.value).subscribe(() => {
-        this.movementAdded.emit();
-        this.movementForm.reset();
-        this.movementModal?.hide();
-      });
+      const payload = this.movementForm.value;
+      if (this.editingMovementId) {
+        // update existing movement
+        this.processService.updateMovement(this.processId, this.editingMovementId, payload).subscribe(() => {
+          this.movementSaved.emit();
+          this.movementForm.reset();
+          this.editingMovementId = null;
+          this.movementModal?.hide();
+        });
+      } else {
+        // create new
+        this.processService.createMovement(this.processId, payload).subscribe(() => {
+          this.movementAdded.emit();
+          this.movementSaved.emit();
+          this.movementForm.reset();
+          this.movementModal?.hide();
+        });
+      }
     }
   }
 
   // allow parent to open the modal programmatically
   show(): void {
+    this.movementModal?.show();
+  }
+
+  // open modal to edit a specific movement
+  openForEdit(movement: { id: number; descricao: string }): void {
+    this.editingMovementId = movement.id;
+    this.movementForm.patchValue({ descricao: movement.descricao });
     this.movementModal?.show();
   }
 }
