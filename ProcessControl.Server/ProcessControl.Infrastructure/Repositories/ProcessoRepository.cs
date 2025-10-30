@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Domain.Entities;
 using ProcessControl.Infrastructure.Persistence;
+using ProcessControl.Application.Exceptions;
 
 namespace ProcessControl.Infrastructure.Repositories
 {
@@ -29,7 +30,18 @@ namespace ProcessControl.Infrastructure.Repositories
         public async Task AddAsync(Processo processo)
         {
             _context.Processos.Add(processo);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    throw new DuplicateEntryException($"Processo with NumeroProcesso {processo.NumeroProcesso} already exists.", pgEx);
+                }
+                throw; // Re-throw other DbUpdateExceptions
+            }
         }
 
         public async Task UpdateAsync(Processo processo)
@@ -47,5 +59,8 @@ namespace ProcessControl.Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Processo?> GetByNumeroProcessoAsync(string numeroProcesso) =>
+            await _context.Processos.FirstOrDefaultAsync(p => p.NumeroProcesso == numeroProcesso);
     }
 }

@@ -10,5 +10,6 @@ namespace ProcessControl.Application.Interfaces
         Task AddAsync(Processo processo);
         Task UpdateAsync(Processo processo);
         Task DeleteAsync(int id);
+        Task<Processo?> GetByNumeroProcessoAsync(string numeroProcesso);
     }
 }

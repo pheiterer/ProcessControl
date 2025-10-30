@@ -41,15 +41,19 @@ namespace ProcessControl.API.Middleware
             {
                 case NotFoundException ex:
                     response.StatusCode = (int)HttpStatusCode.NotFound;
-                    errorResponse.Message = ex.Message;
+                    errorResponse.Message = "Processo não existe";
                     break;
                 case ArgumentException ex:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     errorResponse.Message = ex.Message;
                     break;
+                case DuplicateEntryException ex:
+                    response.StatusCode = (int)HttpStatusCode.Conflict;
+                    errorResponse.Message = "Ja existe um processo com esse número na base";
+                    break;
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    errorResponse.Message = "Internal Server Error. Please try again later.";
+                    errorResponse.Message = "Erro interno do servidor, tente mais tarde.";
                     _logger.LogError(exception, "An unhandled exception occurred.");
                     break;
             }
