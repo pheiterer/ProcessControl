@@ -12,10 +12,7 @@ import { MovementFormComponent } from './components/movement-form/movement-form.
 import { ModalComponent } from './components/shared/modal/modal.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ProcessListComponent
-  ],
+  declarations: [AppComponent, ProcessListComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
@@ -24,10 +21,10 @@ import { ModalComponent } from './components/shared/modal/modal.component';
     FormsModule,
     ProcessDetailComponent,
     MovementFormComponent,
-    ProcessModalComponent
-  ,ModalComponent
+    ProcessModalComponent,
+    ModalComponent,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

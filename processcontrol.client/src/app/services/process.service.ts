@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { Process, ProcessHistory } from '../models/process.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProcessService {
   private apiUrl = '/api/Processos';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // searchTerm first (optional), then page and limit
   getProcesses(searchTerm = '', page = 1, limit = 10): Observable<Process[]> {
@@ -45,12 +45,15 @@ export class ProcessService {
     return this.http.post<any>(`${this.apiUrl}/${processId}/historicos`, movement);
   }
 
-  updateMovement(processId: number, movementId: number, movement: { descricao: string }): Observable<any> {
+  updateMovement(
+    processId: number,
+    movementId: number,
+    movement: { descricao: string }
+  ): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${processId}/historicos/${movementId}`, movement);
   }
 
   deleteMovement(processId: number, movementId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${processId}/historicos/${movementId}`);
   }
-
 }

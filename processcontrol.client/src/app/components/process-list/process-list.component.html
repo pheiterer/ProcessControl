@@ -1,7 +1,7 @@
 <!-- header removed; New button moved next to search -->
 
 <!-- modal component -->
-<app-process-modal *ngIf="modalVisible" [process]="modalToEdit" (saved)="onModalSaved()" (cancel)="closeModal()">
+<app-process-modal *ngIf="modalVisible" [process]="modalToEdit" (saved)="onModalSaved()" (canceled)="closeModal()">
 </app-process-modal>
 
 <div class="container mt-4">

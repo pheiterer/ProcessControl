@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   selector: 'app-process-list',
   standalone: false,
   templateUrl: './process-list.component.html',
-  styleUrls: ['./process-list.component.css']
+  styleUrls: ['./process-list.component.css'],
 })
 export class ProcessListComponent implements OnInit, OnDestroy {
   processes: ProcessModel[] = [];
@@ -41,38 +41,40 @@ export class ProcessListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadPage(1);
-    this.searchSub = this.searchControl.valueChanges.pipe(
-      debounceTime(500),
-      distinctUntilChanged()
-    ).subscribe(value => {
-      this.searchTerm = value || '';
-      // reset paging and reload
-      this.currentPage = 0;
-      this.hasMore = true;
-      this.processes = [];
-      this.loadPage(1);
-    });
+    this.searchSub = this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.searchTerm = value || '';
+        // reset paging and reload
+        this.currentPage = 0;
+        this.hasMore = true;
+        this.processes = [];
+        this.loadPage(1);
+      });
   }
 
   private loadPage(page: number): void {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;
-    this.processService.getProcesses(this.searchTerm, page, this.pageSize).subscribe(data => {
-      const items = data.map(d => ProcessModel.fromDto(d));
-      if (page === 1) {
-        this.processes = items;
-      } else {
-        this.processes = this.processes.concat(items);
+    this.processService.getProcesses(this.searchTerm, page, this.pageSize).subscribe(
+      (data) => {
+        const items = data.map((d) => ProcessModel.fromDto(d));
+        if (page === 1) {
+          this.processes = items;
+        } else {
+          this.processes = this.processes.concat(items);
+        }
+        // movements are loaded on demand when the user opens a process
+        this.currentPage = page;
+        if (items.length < this.pageSize) {
+          this.hasMore = false;
+        }
+        this.isLoading = false;
+      },
+      () => {
+        this.isLoading = false;
       }
-      // movements are loaded on demand when the user opens a process
-      this.currentPage = page;
-      if (items.length < this.pageSize) {
-        this.hasMore = false;
-      }
-      this.isLoading = false;
-    }, () => {
-      this.isLoading = false;
-    });
+    );
   }
 
   editProcess(id: number): void {
@@ -104,7 +106,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/processes', id]);
   }
 
-
   ngOnDestroy(): void {
     this.searchSub?.unsubscribe();
   }
@@ -116,14 +117,14 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   }
 
   openEdit(id: number): void {
-    const p = this.processes.find(x => x.id === id);
+    const p = this.processes.find((x) => x.id === id);
     if (p) {
       this.modalToEdit = p;
       this.modalVisible = true;
       return;
     }
     // fallback: load from server then open
-    this.processService.getProcessById(id).subscribe(proc => {
+    this.processService.getProcessById(id).subscribe((proc) => {
       this.modalToEdit = ProcessModel.fromDto(proc);
       this.modalVisible = true;
     });

@@ -1,13 +1,13 @@
 export enum ProcessStatus {
   EmAndamento = 0,
   Suspenso = 1,
-  Encerrado = 2
+  Encerrado = 2,
 }
 
 export const ProcessStatusText: Record<number, string> = {
   [ProcessStatus.EmAndamento]: 'Em andamento',
   [ProcessStatus.Suspenso]: 'Suspenso',
-  [ProcessStatus.Encerrado]: 'Encerrado'
+  [ProcessStatus.Encerrado]: 'Encerrado',
 };
 
 export interface Process {
@@ -28,8 +28,8 @@ export class ProcessModel implements Process {
     public reu: string,
     public dataAjuizamento: Date | null,
     public status: ProcessStatus | number,
-    public descricao: string,
-  ) { }
+    public descricao: string
+  ) {}
 
   get statusText(): string {
     return ProcessStatusText[Number(this.status)] ?? String(this.status);

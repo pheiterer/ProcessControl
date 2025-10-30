@@ -1,4 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 declare let bootstrap: any;
@@ -8,25 +16,40 @@ declare let bootstrap: any;
   standalone: true,
   imports: [CommonModule],
   template: `
-  <div class="modal fade" tabindex="-1" aria-hidden="true" #modalDiv>
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">{{ title }}</h5>
-          <button *ngIf="showClose" type="button" class="btn-close" (click)="onSecondary()" aria-label="Fechar"></button>
-        </div>
-        <div class="modal-body">
-          <ng-content></ng-content>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="onSecondary()">{{ secondaryText }}</button>
-          <button type="button" [ngClass]="['btn', primaryClass]" (click)="onPrimary()" [disabled]="primaryDisabled">{{ primaryText }}</button>
+    <div class="modal fade" tabindex="-1" aria-hidden="true" #modalDiv>
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ title }}</h5>
+            <button
+              *ngIf="showClose"
+              type="button"
+              class="btn-close"
+              (click)="onSecondary()"
+              aria-label="Fechar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <ng-content></ng-content>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onSecondary()">
+              {{ secondaryText }}
+            </button>
+            <button
+              type="button"
+              [ngClass]="['btn', primaryClass]"
+              (click)="onPrimary()"
+              [disabled]="primaryDisabled"
+            >
+              {{ primaryText }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   `,
-  styles: [``]
+  styles: [``],
 })
 export class ModalComponent implements AfterViewInit {
   @Input() title = '';

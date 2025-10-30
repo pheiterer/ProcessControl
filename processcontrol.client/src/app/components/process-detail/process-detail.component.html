@@ -33,7 +33,7 @@
       Tem certeza que deseja excluir esta movimentação?
     </app-modal>
 
-  <app-process-modal *ngIf="modalVisible" [process]="process" (saved)="onModalSaved()" (cancel)="closeModal()"></app-process-modal>
+  <app-process-modal *ngIf="modalVisible" [process]="process" (saved)="onModalSaved()" (canceled)="closeModal()"></app-process-modal>
 
   <div class="card mt-4">
     <div class="card-header d-flex justify-content-between align-items-center">
