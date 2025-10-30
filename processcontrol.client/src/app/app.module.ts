@@ -10,6 +10,7 @@ import { ProcessModalComponent } from './components/process-modal/process-modal.
 import { ProcessDetailComponent } from './components/process-detail/process-detail.component';
 import { MovementFormComponent } from './components/movement-form/movement-form.component';
 import { ModalComponent } from './components/shared/modal/modal.component';
+import { ToastContainerComponent } from './components/shared/toast-container/toast-container.component';
 
 @NgModule({
   declarations: [AppComponent, ProcessListComponent],
@@ -23,6 +24,7 @@ import { ModalComponent } from './components/shared/modal/modal.component';
     MovementFormComponent,
     ProcessModalComponent,
     ModalComponent,
+    ToastContainerComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],
