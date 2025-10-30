@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { ModalComponent } from '../shared/modal/modal.component';
 import { ProcessService } from '../../services/process.service';
-declare var bootstrap: any;
+declare let bootstrap: any;
 
 @Component({
   selector: 'app-movement-form',

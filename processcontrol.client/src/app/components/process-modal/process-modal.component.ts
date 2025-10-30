@@ -12,14 +12,14 @@ import { ProcessModel, ProcessStatus, ProcessStatusText } from '../../models/pro
   templateUrl: './process-modal.component.html',
   styleUrls: ['./process-modal.component.css']
 })
-export class ProcessModalComponent implements OnInit {
+export class ProcessModalComponent implements OnInit, AfterViewInit {
   @Input() process?: ProcessModel | null;
   @Output() saved = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
   form: FormGroup;
   isEdit = false;
-  statusOptions: Array<{ value: number; label: string }> = [];
+  statusOptions: { value: number; label: string }[] = [];
   @ViewChild('processModal') processModal!: ModalComponent;
 
   constructor(private fb: FormBuilder, private processService: ProcessService) {

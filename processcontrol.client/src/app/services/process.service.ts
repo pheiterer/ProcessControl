@@ -12,7 +12,7 @@ export class ProcessService {
   constructor(private http: HttpClient) { }
 
   // searchTerm first (optional), then page and limit
-  getProcesses(searchTerm: string = '', page: number = 1, limit: number = 10): Observable<Process[]> {
+  getProcesses(searchTerm = '', page = 1, limit = 10): Observable<Process[]> {
     const url = `${this.apiUrl}?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&limit=${limit}`;
     return this.http.get<Process[]>(url);
   }

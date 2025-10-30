@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProcessModel, ProcessHistory } from '../../models/process.model';
-declare var bootstrap: any;
+declare let bootstrap: any;
 import { forkJoin } from 'rxjs';
 import { ProcessService } from '../../services/process.service';
 import { CommonModule } from '@angular/common';

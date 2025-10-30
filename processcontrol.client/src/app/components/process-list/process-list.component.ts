@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
 import { ModalComponent } from '../shared/modal/modal.component';
-declare var bootstrap: any;
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
 import { ProcessModel } from '../../models/process.model';
@@ -16,7 +15,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class ProcessListComponent implements OnInit, OnDestroy {
   processes: ProcessModel[] = [];
-  searchTerm: string = '';
+  searchTerm = '';
   searchControl: FormControl;
   private searchSub?: Subscription;
   // modal state for process modal component
