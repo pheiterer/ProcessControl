@@ -1,4 +1,3 @@
-
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Domain.Entities;
@@ -60,8 +59,8 @@ namespace ProcessControl.Application.Services
                 Autor = createProcessoDto.Autor,
                 Reu = createProcessoDto.Reu,
                 Descricao = createProcessoDto.Descricao,
-                DataAjuizamento = DateTime.UtcNow,
-                Status = StatusProcesso.EmAndamento
+                DataAjuizamento = createProcessoDto.DataAjuizamento.ToUniversalTime(),
+                Status = createProcessoDto.Status
             };
 
             await _processRepository.AddAsync(processo);
