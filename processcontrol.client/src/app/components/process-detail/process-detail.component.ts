@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProcessModel, ProcessHistory } from '../../models/process.model';
@@ -8,11 +8,12 @@ import { ProcessService } from '../../services/process.service';
 import { CommonModule } from '@angular/common';
 import { MovementFormComponent } from '../movement-form/movement-form.component';
 import { ProcessModalComponent } from '../process-modal/process-modal.component';
+import { ModalComponent } from '../shared/modal/modal.component';
 
 @Component({
   selector: 'app-process-detail',
   standalone: true,
-  imports: [CommonModule, MovementFormComponent, ProcessModalComponent, FormsModule],
+  imports: [CommonModule, MovementFormComponent, ProcessModalComponent, FormsModule, ModalComponent],
   templateUrl: './process-detail.component.html',
   styleUrls: ['./process-detail.component.css']
 })
@@ -25,6 +26,7 @@ export class ProcessDetailComponent implements OnInit {
   editingMovementText = '';
   // pending delete for movement confirmation modal
   pendingDeleteMovementId: number | null = null;
+  @ViewChild('confirmMovementModal') confirmMovementModal!: ModalComponent;
   // loading flags
   isLoadingProcess = false;
   isLoadingHistorico = false;
@@ -116,11 +118,7 @@ export class ProcessDetailComponent implements OnInit {
   deleteMovementConfirmed(movementId: number): void {
     if (!this.process) return;
     this.pendingDeleteMovementId = movementId;
-    const modalEl = document.getElementById('confirmDeleteMovementModal');
-    if (modalEl) {
-      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-      modal.show();
-    }
+    this.confirmMovementModal?.show();
   }
 
   confirmDeleteMovement(): void {
@@ -130,11 +128,7 @@ export class ProcessDetailComponent implements OnInit {
     this.processService.deleteMovement(this.process.id, id).subscribe(() => {
       this.loadHistorico(this.process!.id);
       this.isLoadingHistorico = false;
-      const modalEl = document.getElementById('confirmDeleteMovementModal');
-      if (modalEl) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.hide();
-      }
+      this.confirmMovementModal?.hide();
       this.pendingDeleteMovementId = null;
     }, () => {
       this.isLoadingHistorico = false;
@@ -151,6 +145,18 @@ export class ProcessDetailComponent implements OnInit {
 
   onModalSaved(): void {
     this.closeModal();
-    this.loadProcess();
+    // reload only the process DTO (no need to reload movements/historico)
+    if (this.process) {
+      this.isLoadingProcess = true;
+      this.processService.getProcessById(this.process.id).subscribe(proc => {
+        this.process = ProcessModel.fromDto(proc);
+        this.isLoadingProcess = false;
+      }, () => {
+        this.isLoadingProcess = false;
+      });
+    } else {
+      // fallback: nothing loaded yet, load everything
+      this.loadProcess();
+    }
   }
 }

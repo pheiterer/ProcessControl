@@ -12,6 +12,5 @@ namespace ProcessControl.Application.DTOs
         public DateTime DataAjuizamento { get; set; }
         public StatusProcesso Status { get; set; }
         public string? Descricao { get; set; }
-        public ICollection<HistoricoProcessoDto>? Historico { get; set; }
     }
 }

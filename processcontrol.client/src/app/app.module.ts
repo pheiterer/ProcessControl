@@ -9,6 +9,7 @@ import { ProcessListComponent } from './components/process-list/process-list.com
 import { ProcessModalComponent } from './components/process-modal/process-modal.component';
 import { ProcessDetailComponent } from './components/process-detail/process-detail.component';
 import { MovementFormComponent } from './components/movement-form/movement-form.component';
+import { ModalComponent } from './components/shared/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { MovementFormComponent } from './components/movement-form/movement-form.
     ProcessDetailComponent,
     MovementFormComponent,
     ProcessModalComponent
+  ,ModalComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -68,21 +68,6 @@
   </div>
 </div>
 
-<!-- confirmation modal for deleting a process -->
-<div class="modal fade" id="confirmDeleteProcessModal" tabindex="-1" aria-labelledby="confirmDeleteProcessModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmDeleteProcessModalLabel">Confirmar exclusão</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        Tem certeza que deseja excluir este processo?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" (click)="confirmDeleteProcess()">Excluir</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-modal #confirmProcessModal title="Confirmar exclusão" primaryText="Excluir" primaryClass="btn-danger" secondaryText="Cancelar" (primary)="confirmDeleteProcess()">
+  Tem certeza que deseja excluir este processo?
+</app-modal>

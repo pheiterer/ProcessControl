@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
+import { ModalComponent } from '../shared/modal/modal.component';
 declare var bootstrap: any;
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
@@ -23,6 +24,8 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   modalToEdit?: ProcessModel | null;
   // pending delete state for confirmation modal
   pendingDeleteProcessId: number | null = null;
+
+  @ViewChild('confirmProcessModal') confirmProcessModal!: ModalComponent;
   // paging / infinite scroll
   pageSize = 20;
   currentPage = 0; // 0 means not loaded yet
@@ -81,11 +84,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
   deleteProcess(id: number): void {
     // open confirmation modal instead of using browser confirm
     this.pendingDeleteProcessId = id;
-    const modalEl = document.getElementById('confirmDeleteProcessModal');
-    if (modalEl) {
-      const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-      modal.show();
-    }
+    this.confirmProcessModal?.show();
   }
 
   confirmDeleteProcess(): void {
@@ -97,12 +96,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
       this.hasMore = true;
       this.processes = [];
       this.loadPage(1);
-      // hide modal
-      const modalEl = document.getElementById('confirmDeleteProcessModal');
-      if (modalEl) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.hide();
-      }
+      this.confirmProcessModal?.hide();
       this.pendingDeleteProcessId = null;
     });
   }
