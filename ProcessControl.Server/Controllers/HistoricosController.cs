@@ -13,7 +13,7 @@ namespace ProcessControl.API.Controllers
 
         // GET: api/processos/5/historicos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<HistoricoProcessoDto>>> GetHistoricos([FromRoute] int processoId, [FromQuery] int page,[FromQuery] int? limit)
+        public async Task<ActionResult<IEnumerable<HistoricoProcessoDto>>> GetHistoricos([FromRoute] int processoId, [FromQuery] int page, [FromQuery] int? limit)
         {
             var historicos = await _historicoService.GetHistoricosByProcessoIdAsync(page, limit, processoId);
             return Ok(historicos);

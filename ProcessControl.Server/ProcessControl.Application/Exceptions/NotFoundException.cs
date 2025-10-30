@@ -1,6 +1,3 @@
-
-using System;
-
 namespace ProcessControl.Application.Exceptions
 {
     public class NotFoundException : Exception

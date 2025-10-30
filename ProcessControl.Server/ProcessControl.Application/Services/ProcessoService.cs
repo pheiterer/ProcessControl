@@ -1,6 +1,6 @@
 using ProcessControl.Application.DTOs;
-using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Exceptions;
+using ProcessControl.Application.Interfaces;
 using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services

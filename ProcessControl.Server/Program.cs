@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using ProcessControl.API.Middleware;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Services;
 using ProcessControl.Infrastructure.Persistence;
 using ProcessControl.Infrastructure.Repositories;
-using ProcessControl.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 

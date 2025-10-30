@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using ProcessControl.Application.Exceptions;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Domain.Entities;
 using ProcessControl.Infrastructure.Persistence;
-using ProcessControl.Application.Exceptions;
 
 namespace ProcessControl.Infrastructure.Repositories
 {
