@@ -1,3 +1,4 @@
+using AutoMapper;
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Exceptions;
 using ProcessControl.Application.Interfaces;
@@ -5,9 +6,10 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class HistoricoProcessoService(IUnitOfWork unitOfWork) : IHistoricoProcessoService
+    public sealed class HistoricoProcessoService(IUnitOfWork unitOfWork, IMapper mapper) : IHistoricoProcessoService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<HistoricoProcessoDto>> GetHistoricosByProcessoIdAsync(int page, int? limit, int processoId)
         {
@@ -22,14 +24,7 @@ namespace ProcessControl.Application.Services
                 : defaultLimit;
 
             var historicos = await _unitOfWork.HistoricoProcessoRepository.GetByProcessoIdAsync(page, pageSize, processoId);
-            return historicos.Select(h => new HistoricoProcessoDto
-            {
-                Id = h.Id,
-                ProcessoId = h.ProcessoId,
-                Descricao = h.Descricao,
-                DataInclusao = h.DataInclusao,
-                DataAlteracao = h.DataAlteracao
-            });
+            return _mapper.Map<IEnumerable<HistoricoProcessoDto>>(historicos);
         }
 
         public async Task<HistoricoProcessoDto> CreateHistoricoAsync(int processoId, CreateHistoricoProcessoDto createHistoricoDto)

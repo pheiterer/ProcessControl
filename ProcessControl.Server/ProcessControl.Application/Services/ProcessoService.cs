@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Exceptions;
@@ -6,9 +7,10 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class ProcessoService(IUnitOfWork unitOfWork) : IProcessoService
+    public sealed class ProcessoService(IUnitOfWork unitOfWork, IMapper mapper) : IProcessoService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? searchTerm)
         {
@@ -24,16 +26,7 @@ namespace ProcessControl.Application.Services
 
             var processos = await _unitOfWork.ProcessoRepository.GetProcessListAsync(page, pageSize, searchTerm);
 
-            return processos.Select(p => new ProcessoDto
-            {
-                Id = p.Id,
-                NumeroProcesso = p.NumeroProcesso,
-                Autor = p.Autor,
-                Reu = p.Reu,
-                DataAjuizamento = p.DataAjuizamento,
-                Status = p.Status,
-                Descricao = p.Descricao
-            });
+            return _mapper.Map<IEnumerable<ProcessoDto>>(processos);
         }
 
         public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
@@ -41,27 +34,12 @@ namespace ProcessControl.Application.Services
             var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            return new ProcessoDto
-            {
-                Id = processo.Id,
-                NumeroProcesso = processo.NumeroProcesso,
-                Autor = processo.Autor,
-                Reu = processo.Reu,
-                DataAjuizamento = processo.DataAjuizamento,
-                Status = processo.Status,
-                Descricao = processo.Descricao
-            };
+            return _mapper.Map<ProcessoDto>(processo);
         }
 
         public async Task<ProcessoDto> CreateProcessoAsync(CreateProcessoDto createProcessoDto)
         {
-            var processo = new Processo(
-                createProcessoDto.NumeroProcesso,
-                createProcessoDto.Autor,
-                createProcessoDto.Reu,
-                createProcessoDto.DataAjuizamento.ToUniversalTime(),
-                createProcessoDto.Descricao
-            );
+            var processo = _mapper.Map<Processo>(createProcessoDto);
 
             await _unitOfWork.ProcessoRepository.AddAsync(processo);
 
@@ -78,16 +56,7 @@ namespace ProcessControl.Application.Services
                 throw; // Re-throw other DbUpdateExceptions
             }
 
-            return new ProcessoDto
-            {
-                Id = processo.Id,
-                NumeroProcesso = processo.NumeroProcesso,
-                Autor = processo.Autor,
-                Reu = processo.Reu,
-                DataAjuizamento = processo.DataAjuizamento,
-                Status = processo.Status,
-                Descricao = processo.Descricao
-            };
+            return _mapper.Map<ProcessoDto>(processo);
         }
 
         public async Task UpdateProcessoAsync(int id, UpdateProcessoDto updateProcessoDto)
@@ -95,14 +64,8 @@ namespace ProcessControl.Application.Services
             var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            processo.AtualizarDadosBasicos(
-                updateProcessoDto.NumeroProcesso,
-                updateProcessoDto.Autor,
-                updateProcessoDto.Reu,
-                updateProcessoDto.Descricao
-            );
-
-            processo.MudarStatus(updateProcessoDto.Status);
+            // Mapeia as propriedades do DTO para a entidade que já está sendo rastreada pelo EF Core
+            _mapper.Map(updateProcessoDto, processo);
 
             await _unitOfWork.ProcessoRepository.UpdateAsync(processo);
             await _unitOfWork.SaveChangesAsync();

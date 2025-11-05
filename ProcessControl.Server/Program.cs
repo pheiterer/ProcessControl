@@ -15,6 +15,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProcessoService, ProcessoService>();
 builder.Services.AddScoped<IHistoricoProcessoService, HistoricoProcessoService>();
 
+// Configura o AutoMapper para escanear os perfis de mapeamento no assembly da camada de Aplicação
+builder.Services.AddAutoMapper(typeof(ProcessoService).Assembly);
+
 // Add services to the container.
 builder.Services.AddDbContext<ProcessControl.Infrastructure.Persistence.ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
