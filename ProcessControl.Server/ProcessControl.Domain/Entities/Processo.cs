@@ -9,7 +9,7 @@ namespace ProcessControl.Domain.Entities
 
     public sealed class Processo
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
         public required string NumeroProcesso { get; set; }
 
@@ -23,6 +23,6 @@ namespace ProcessControl.Domain.Entities
 
         public string? Descricao { get; set; }
 
-        public ICollection<HistoricoProcesso>? Historico { get; set; }
+        public ICollection<HistoricoProcesso> Historico { get; private set; } = new List<HistoricoProcesso>();
     }
 }

@@ -2,7 +2,7 @@ namespace ProcessControl.Domain.Entities
 {
     public sealed class HistoricoProcesso
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
         public required int ProcessoId { get; set; }
 
@@ -10,7 +10,7 @@ namespace ProcessControl.Domain.Entities
 
         public required string Descricao { get; set; }
 
-        public DateTime DataInclusao { get; set; } = DateTime.UtcNow;
+        public DateTime DataInclusao { get; set; }
 
         public DateTime DataAlteracao { get; set; }
     }
