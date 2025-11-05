@@ -49,4 +49,8 @@
     <ProjectReference Include="ProcessControl.Infrastructure\ProcessControl.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
