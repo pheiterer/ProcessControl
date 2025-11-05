@@ -17,7 +17,6 @@ export class ProcessService {
     private toastService: ToastService
   ) {}
 
-  // searchTerm first (optional), then page and limit
   getProcesses(searchTerm = '', page = 1, limit = 10): Observable<Process[]> {
     const url = `${this.apiUrl}?searchTerm=${encodeURIComponent(searchTerm)}&page=${page}&limit=${limit}`;
     return this.http.get<Process[]>(url).pipe(catchError((err) => this.handleError(err)));
@@ -59,9 +58,6 @@ export class ProcessService {
       );
   }
 
-  /**
-   * Get movements (historico) for a process — default to page 1/limit 20 if not specified.
-   */
   getMovements(processId: number, page = 1, limit = 10): Observable<ProcessHistory[]> {
     const url = `${this.apiUrl}/${processId}/historicos?page=${page}&limit=${limit}`;
     return this.http.get<ProcessHistory[]>(url).pipe(catchError((err) => this.handleError(err)));
