@@ -1,4 +1,6 @@
+
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using ProcessControl.API.Exceptions;
 using ProcessControl.Application.Interfaces;
@@ -12,8 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Adiciona e configura o FluentValidation para escanear e registrar todos os validadores no assembly da Aplicação
+// Adiciona e configura o FluentValidation
 builder.Services.AddValidatorsFromAssembly(typeof(ProcessoService).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProcessoService, ProcessoService>();
