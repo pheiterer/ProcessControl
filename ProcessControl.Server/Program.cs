@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ProcessControl.API.Middleware;
 using ProcessControl.Application.Interfaces;
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+// Adiciona e configura o FluentValidation para escanear e registrar todos os validadores no assembly da Aplicação
+builder.Services.AddValidatorsFromAssembly(typeof(ProcessoService).Assembly);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProcessoService, ProcessoService>();
