@@ -1,10 +1,10 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.API.Middleware;
+using ProcessControl.API.Exceptions;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Services;
-using ProcessControl.Infrastructure.Persistence;
 using ProcessControl.Infrastructure;
+using ProcessControl.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +21,8 @@ builder.Services.AddScoped<IHistoricoProcessoService, HistoricoProcessoService>(
 
 // Configura o AutoMapper para escanear os perfis de mapeamento no assembly da camada de Aplicação
 builder.Services.AddAutoMapper(typeof(ProcessoService).Assembly);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Add services to the container.
 builder.Services.AddDbContext<ProcessControl.Infrastructure.Persistence.ApplicationDbContext>(options =>
@@ -58,9 +60,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseExceptionHandler(_ => { });
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseHttpsRedirection();
 
 app.UseCors("AllowAngular");
 

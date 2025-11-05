@@ -49,9 +49,16 @@ namespace ProcessControl.Application.Services
             }
             catch (DbUpdateException ex)
             {
-                if (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
+                if (ex.InnerException is Npgsql.PostgresException pgEx)
                 {
-                    throw new DuplicateEntryException($"Processo with NumeroProcesso {processo.NumeroProcesso} already exists.", pgEx);
+                    switch (pgEx.SqlState)
+                    {
+                        case "23505": // unique_violation
+                            throw new DuplicateEntryException($"Já existe um processo com o número '{processo.NumeroProcesso}'.", pgEx);
+
+                        case "23503": // foreign_key_violation
+                            throw new ForeignKeyViolationException("Uma das referências de dados fornecidas é inválida.", pgEx);
+                    }
                 }
                 throw; // Re-throw other DbUpdateExceptions
             }
