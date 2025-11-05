@@ -13,6 +13,7 @@ namespace ProcessControl.Infrastructure.Repositories
         public async Task<IEnumerable<HistoricoProcesso>> GetByProcessoIdAsync(int page, int limit, int processoId)
         {
             var query = _context.HistoricosProcesso
+                .AsNoTracking()
                 .Where(h => h.ProcessoId == processoId)
                 .OrderByDescending(h => h.DataInclusao)
                 .Skip((page - 1) * limit)
@@ -23,19 +24,20 @@ namespace ProcessControl.Infrastructure.Repositories
 
         public async Task<HistoricoProcesso?> GetByIdAsync(int processoId, int id)
         {
-            return await _context.HistoricosProcesso.FirstOrDefaultAsync(h => h.ProcessoId == processoId && h.Id == id);
+            return await _context.HistoricosProcesso
+                .AsNoTracking()
+                .FirstOrDefaultAsync(h => h.ProcessoId == processoId && h.Id == id);
         }
 
         public async Task AddAsync(HistoricoProcesso historico)
         {
-            _context.HistoricosProcesso.Add(historico);
-            await _context.SaveChangesAsync();
+            await _context.HistoricosProcesso.AddAsync(historico);
         }
 
-        public async Task UpdateAsync(HistoricoProcesso historico)
+        public Task UpdateAsync(HistoricoProcesso historico)
         {
             _context.Entry(historico).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task DeleteAsync(int id)
@@ -44,7 +46,6 @@ namespace ProcessControl.Infrastructure.Repositories
             if (historico != null)
             {
                 _context.HistoricosProcesso.Remove(historico);
-                await _context.SaveChangesAsync();
             }
         }
     }

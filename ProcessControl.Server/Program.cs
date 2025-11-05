@@ -3,7 +3,7 @@ using ProcessControl.API.Middleware;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Services;
 using ProcessControl.Infrastructure.Persistence;
-using ProcessControl.Infrastructure.Repositories;
+using ProcessControl.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IProcessoRepository, ProcessoRepository>();
-builder.Services.AddScoped<IHistoricoProcessoRepository, HistoricoProcessoRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProcessoService, ProcessoService>();
 builder.Services.AddScoped<IHistoricoProcessoService, HistoricoProcessoService>();
 

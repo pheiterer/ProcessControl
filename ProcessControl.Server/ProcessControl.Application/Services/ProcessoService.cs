@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Exceptions;
 using ProcessControl.Application.Interfaces;
@@ -5,9 +6,9 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class ProcessoService(IProcessoRepository processRepository) : IProcessoService
+    public sealed class ProcessoService(IUnitOfWork unitOfWork) : IProcessoService
     {
-        private readonly IProcessoRepository _processRepository = processRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? searchTerm)
         {
@@ -21,7 +22,7 @@ namespace ProcessControl.Application.Services
                 ? Math.Min(limit.Value, maxLimit)
                 : defaultLimit;
 
-            var processos = await _processRepository.GetProcessListAsync(page, pageSize, searchTerm);
+            var processos = await _unitOfWork.ProcessoRepository.GetProcessListAsync(page, pageSize, searchTerm);
 
             return processos.Select(p => new ProcessoDto
             {
@@ -37,7 +38,7 @@ namespace ProcessControl.Application.Services
 
         public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
             return new ProcessoDto
@@ -62,7 +63,20 @@ namespace ProcessControl.Application.Services
                 createProcessoDto.Descricao
             );
 
-            await _processRepository.AddAsync(processo);
+            await _unitOfWork.ProcessoRepository.AddAsync(processo);
+
+            try
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
+                {
+                    throw new DuplicateEntryException($"Processo with NumeroProcesso {processo.NumeroProcesso} already exists.", pgEx);
+                }
+                throw; // Re-throw other DbUpdateExceptions
+            }
 
             return new ProcessoDto
             {
@@ -78,7 +92,7 @@ namespace ProcessControl.Application.Services
 
         public async Task UpdateProcessoAsync(int id, UpdateProcessoDto updateProcessoDto)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
             processo.AtualizarDadosBasicos(
@@ -90,14 +104,17 @@ namespace ProcessControl.Application.Services
 
             processo.MudarStatus(updateProcessoDto.Status);
 
-            await _processRepository.UpdateAsync(processo);
+            await _unitOfWork.ProcessoRepository.UpdateAsync(processo);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteProcessoAsync(int id)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
-            await _processRepository.DeleteAsync(id);
+            
+            await _unitOfWork.ProcessoRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

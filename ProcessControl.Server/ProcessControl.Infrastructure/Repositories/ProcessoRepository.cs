@@ -12,7 +12,7 @@ namespace ProcessControl.Infrastructure.Repositories
 
         public async Task<IEnumerable<Processo>> GetProcessListAsync(int page, int limit, string? searchTerm)
         {
-            var query = _context.Processos.AsQueryable();
+            var query = _context.Processos.AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 query = query.Where(p => p.NumeroProcesso.Contains(searchTerm));
@@ -25,29 +25,18 @@ namespace ProcessControl.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<Processo?> GetByIdAsync(int id) => await _context.Processos.FindAsync(id);
+        public async Task<Processo?> GetByIdAsync(int id) => 
+            await _context.Processos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task AddAsync(Processo processo)
         {
-            _context.Processos.Add(processo);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                if (ex.InnerException is Npgsql.PostgresException pgEx && pgEx.SqlState == "23505")
-                {
-                    throw new DuplicateEntryException($"Processo with NumeroProcesso {processo.NumeroProcesso} already exists.", pgEx);
-                }
-                throw; // Re-throw other DbUpdateExceptions
-            }
+            await _context.Processos.AddAsync(processo);
         }
 
-        public async Task UpdateAsync(Processo processo)
+        public Task UpdateAsync(Processo processo)
         {
             _context.Entry(processo).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public async Task DeleteAsync(int id)
@@ -56,11 +45,10 @@ namespace ProcessControl.Infrastructure.Repositories
             if (processo != null)
             {
                 _context.Processos.Remove(processo);
-                await _context.SaveChangesAsync();
             }
         }
 
         public async Task<Processo?> GetByNumeroProcessoAsync(string numeroProcesso) =>
-            await _context.Processos.FirstOrDefaultAsync(p => p.NumeroProcesso == numeroProcesso);
+            await _context.Processos.AsNoTracking().FirstOrDefaultAsync(p => p.NumeroProcesso == numeroProcesso);
     }
 }

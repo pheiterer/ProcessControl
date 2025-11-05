@@ -5,10 +5,9 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class HistoricoProcessoService(IHistoricoProcessoRepository historicoRepository, IProcessoRepository processoRepository) : IHistoricoProcessoService
+    public sealed class HistoricoProcessoService(IUnitOfWork unitOfWork) : IHistoricoProcessoService
     {
-        private readonly IHistoricoProcessoRepository _historicoRepository = historicoRepository;
-        private readonly IProcessoRepository _processoRepository = processoRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
         public async Task<IEnumerable<HistoricoProcessoDto>> GetHistoricosByProcessoIdAsync(int page, int? limit, int processoId)
         {
@@ -22,7 +21,7 @@ namespace ProcessControl.Application.Services
                 ? Math.Min(limit.Value, maxLimit)
                 : defaultLimit;
 
-            var historicos = await _historicoRepository.GetByProcessoIdAsync(page, pageSize, processoId);
+            var historicos = await _unitOfWork.HistoricoProcessoRepository.GetByProcessoIdAsync(page, pageSize, processoId);
             return historicos.Select(h => new HistoricoProcessoDto
             {
                 Id = h.Id,
@@ -35,12 +34,13 @@ namespace ProcessControl.Application.Services
 
         public async Task<HistoricoProcessoDto> CreateHistoricoAsync(int processoId, CreateHistoricoProcessoDto createHistoricoDto)
         {
-            var processo = await _processoRepository.GetByIdAsync(processoId);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(processoId);
             if (processo == null) throw new NotFoundException($"Processo with ID {processoId} not found.");
 
             var historico = new HistoricoProcesso(processoId, createHistoricoDto.Descricao);
 
-            await _historicoRepository.AddAsync(historico);
+            await _unitOfWork.HistoricoProcessoRepository.AddAsync(historico);
+            await _unitOfWork.SaveChangesAsync();
 
             return new HistoricoProcessoDto
             {
@@ -54,19 +54,22 @@ namespace ProcessControl.Application.Services
 
         public async Task UpdateHistoricoAsync(int processoId, int id, UpdateHistoricoProcessoDto updateHistoricoDto)
         {
-            var historico = await _historicoRepository.GetByIdAsync(processoId, id);
+            var historico = await _unitOfWork.HistoricoProcessoRepository.GetByIdAsync(processoId, id);
             if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
 
             historico.AtualizarDescricao(updateHistoricoDto.Descricao);
 
-            await _historicoRepository.UpdateAsync(historico);
+            await _unitOfWork.HistoricoProcessoRepository.UpdateAsync(historico);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteHistoricoAsync(int processoId, int id)
         {
-            var historico = await _historicoRepository.GetByIdAsync(processoId, id);
+            var historico = await _unitOfWork.HistoricoProcessoRepository.GetByIdAsync(processoId, id);
             if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
-            await _historicoRepository.DeleteAsync(historico.Id);
+            
+            await _unitOfWork.HistoricoProcessoRepository.DeleteAsync(historico.Id);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
