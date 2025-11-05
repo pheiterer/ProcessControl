@@ -1,15 +1,18 @@
 import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ModalComponent } from '../shared/modal/modal.component';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
 import { ProcessModel } from '../../models/process.model';
 import { ProcessService } from '../../services/process.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ProcessModalComponent } from '../process-modal/process-modal.component';
 
 @Component({
   selector: 'app-process-list',
-  standalone: false,
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ProcessModalComponent, ModalComponent],
   templateUrl: './process-list.component.html',
   styleUrls: ['./process-list.component.css'],
 })
