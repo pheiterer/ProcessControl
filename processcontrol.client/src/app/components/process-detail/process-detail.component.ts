@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessModel, ProcessHistory } from '../../models/process.model';
 // bootstrap is used in shared modal component; not needed here
 import { forkJoin } from 'rxjs';
@@ -44,7 +44,8 @@ export class ProcessDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private processService: ProcessService
+    private processService: ProcessService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -55,14 +56,13 @@ export class ProcessDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       const pid = +id;
-      // fetch process and first page of historico in parallel
       this.isLoadingProcess = true;
       this.isLoadingHistorico = true;
       forkJoin({
         process: this.processService.getProcessById(pid),
         movements: this.processService.getMovements(pid, 1, this.historicoPageSize),
-      }).subscribe(
-        ({ process, movements }) => {
+      }).subscribe({
+        next: ({ process, movements }) => {
           this.process = ProcessModel.fromDto(process);
           this.historicoCurrentPage = 1;
           this.historicoHasMore = movements.length >= this.historicoPageSize;
@@ -76,11 +76,14 @@ export class ProcessDetailComponent implements OnInit {
           this.isLoadingProcess = false;
           this.isLoadingHistorico = false;
         },
-        () => {
+        error: (error) => {
+          if (error.status === 404) {
+            this.router.navigate(['/404']);
+          }
           this.isLoadingProcess = false;
           this.isLoadingHistorico = false;
-        }
-      );
+        },
+      });
     }
   }
 
@@ -92,8 +95,8 @@ export class ProcessDetailComponent implements OnInit {
     }
     if (!this.historicoHasMore && page > 1) return;
     this.isLoadingHistorico = true;
-    this.processService.getMovements(processId, page, this.historicoPageSize).subscribe(
-      (movs) => {
+    this.processService.getMovements(processId, page, this.historicoPageSize).subscribe({
+      next: (movs) => {
         const items = movs.map((m) => ({
           id: m.id,
           processoId: m.processoId ?? processId,
@@ -110,25 +113,23 @@ export class ProcessDetailComponent implements OnInit {
         this.historicoHasMore = items.length >= this.historicoPageSize;
         this.isLoadingHistorico = false;
       },
-      () => {
+      error: () => {
         this.isLoadingHistorico = false;
-      }
-    );
+      },
+    });
   }
 
   @HostListener('window:scroll', [])
   onWindowScroll(): void {
     if (this.isLoadingHistorico || !this.process || !this.historicoHasMore) return;
-    const threshold = 300; // px
+    const threshold = 300;
     const position = window.innerHeight + window.scrollY;
     const height = document.documentElement.scrollHeight;
     if (position >= height - threshold) {
-      // load next page
       this.loadHistorico(this.process.id, this.historicoCurrentPage + 1, false);
     }
   }
 
-  // movement edit handlers (on process detail page)
   startEditMovement(m: ProcessHistory): void {
     this.editingMovementId = m.id;
     this.editingMovementText = m.descricao;
@@ -144,9 +145,8 @@ export class ProcessDetailComponent implements OnInit {
     this.isLoadingHistorico = true;
     this.processService
       .updateMovement(this.process.id, movementId, { descricao: this.editingMovementText })
-      .subscribe(
-        () => {
-          // update local historico item: set new description and update dateAlteracao to now
+      .subscribe({
+        next: () => {
           const idx = this.historico.findIndex((h) => h.id === movementId);
           if (idx >= 0) {
             this.historico[idx].descricao = this.editingMovementText;
@@ -155,13 +155,12 @@ export class ProcessDetailComponent implements OnInit {
           this.isLoadingHistorico = false;
           this.cancelEditMovement();
         },
-        () => {
+        error: () => {
           this.isLoadingHistorico = false;
-        }
-      );
+        },
+      });
   }
 
-  // open confirmation modal for movement deletion
   deleteMovementConfirmed(movementId: number): void {
     if (!this.process) return;
     this.pendingDeleteMovementId = movementId;
@@ -172,17 +171,17 @@ export class ProcessDetailComponent implements OnInit {
     if (!this.process || !this.pendingDeleteMovementId) return;
     const id = this.pendingDeleteMovementId;
     this.isLoadingHistorico = true;
-    this.processService.deleteMovement(this.process.id, id).subscribe(
-      () => {
+    this.processService.deleteMovement(this.process.id, id).subscribe({
+      next: () => {
         this.loadHistorico(this.process!.id, 1, true);
         this.isLoadingHistorico = false;
         this.confirmMovementModal?.hide();
         this.pendingDeleteMovementId = null;
       },
-      () => {
+      error: () => {
         this.isLoadingHistorico = false;
-      }
-    );
+      },
+    });
   }
 
   openEdit(): void {
@@ -195,20 +194,18 @@ export class ProcessDetailComponent implements OnInit {
 
   onModalSaved(): void {
     this.closeModal();
-    // reload only the process DTO (no need to reload movements/historico)
     if (this.process) {
       this.isLoadingProcess = true;
-      this.processService.getProcessById(this.process.id).subscribe(
-        (proc) => {
+      this.processService.getProcessById(this.process.id).subscribe({
+        next: (proc) => {
           this.process = ProcessModel.fromDto(proc);
           this.isLoadingProcess = false;
         },
-        () => {
+        error: () => {
           this.isLoadingProcess = false;
-        }
-      );
+        },
+      });
     } else {
-      // fallback: nothing loaded yet, load everything
       this.loadProcess();
     }
   }
