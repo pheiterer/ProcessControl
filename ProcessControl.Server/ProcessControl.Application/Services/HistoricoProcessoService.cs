@@ -38,12 +38,7 @@ namespace ProcessControl.Application.Services
             var processo = await _processoRepository.GetByIdAsync(processoId);
             if (processo == null) throw new NotFoundException($"Processo with ID {processoId} not found.");
 
-            var historico = new HistoricoProcesso
-            {
-                ProcessoId = processoId,
-                Processo = processo,
-                Descricao = createHistoricoDto.Descricao
-            };
+            var historico = new HistoricoProcesso(processoId, createHistoricoDto.Descricao);
 
             await _historicoRepository.AddAsync(historico);
 
@@ -62,7 +57,7 @@ namespace ProcessControl.Application.Services
             var historico = await _historicoRepository.GetByIdAsync(processoId, id);
             if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
 
-            historico.Descricao = updateHistoricoDto.Descricao;
+            historico.AtualizarDescricao(updateHistoricoDto.Descricao);
 
             await _historicoRepository.UpdateAsync(historico);
         }

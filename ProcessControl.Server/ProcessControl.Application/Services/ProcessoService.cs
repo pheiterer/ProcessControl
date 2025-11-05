@@ -54,15 +54,13 @@ namespace ProcessControl.Application.Services
 
         public async Task<ProcessoDto> CreateProcessoAsync(CreateProcessoDto createProcessoDto)
         {
-            var processo = new Processo
-            {
-                NumeroProcesso = createProcessoDto.NumeroProcesso,
-                Autor = createProcessoDto.Autor,
-                Reu = createProcessoDto.Reu,
-                Descricao = createProcessoDto.Descricao,
-                DataAjuizamento = createProcessoDto.DataAjuizamento.ToUniversalTime(),
-                Status = createProcessoDto.Status
-            };
+            var processo = new Processo(
+                createProcessoDto.NumeroProcesso,
+                createProcessoDto.Autor,
+                createProcessoDto.Reu,
+                createProcessoDto.DataAjuizamento.ToUniversalTime(),
+                createProcessoDto.Descricao
+            );
 
             await _processRepository.AddAsync(processo);
 
@@ -83,11 +81,14 @@ namespace ProcessControl.Application.Services
             var processo = await _processRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            processo.NumeroProcesso = updateProcessoDto.NumeroProcesso;
-            processo.Autor = updateProcessoDto.Autor;
-            processo.Reu = updateProcessoDto.Reu;
-            processo.Status = updateProcessoDto.Status;
-            processo.Descricao = updateProcessoDto.Descricao;
+            processo.AtualizarDadosBasicos(
+                updateProcessoDto.NumeroProcesso,
+                updateProcessoDto.Autor,
+                updateProcessoDto.Reu,
+                updateProcessoDto.Descricao
+            );
+
+            processo.MudarStatus(updateProcessoDto.Status);
 
             await _processRepository.UpdateAsync(processo);
         }

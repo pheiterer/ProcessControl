@@ -4,14 +4,27 @@ namespace ProcessControl.Domain.Entities
     {
         public int Id { get; private set; }
 
-        public required int ProcessoId { get; set; }
+        public int ProcessoId { get; private set; }
 
-        public required Processo Processo { get; set; }
+        public Processo Processo { get; private set; } = null!;
 
-        public required string Descricao { get; set; }
+        public string Descricao { get; private set; } = null!;
 
         public DateTime DataInclusao { get; set; }
 
         public DateTime DataAlteracao { get; set; }
+
+        private HistoricoProcesso() { }
+
+        public HistoricoProcesso(int processoId, string descricao)
+        {
+            ProcessoId = processoId;
+            Descricao = descricao;
+        }
+
+        public void AtualizarDescricao(string novaDescricao)
+        {
+            Descricao = novaDescricao;
+        }
     }
 }
