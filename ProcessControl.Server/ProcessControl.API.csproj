@@ -31,9 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
-      <Version>8.*-*</Version>
-    </PackageReference>
+<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -48,6 +47,10 @@
     <ProjectReference Include="ProcessControl.Application\ProcessControl.Application.csproj" />
     <ProjectReference Include="ProcessControl.Domain\ProcessControl.Domain.csproj" />
     <ProjectReference Include="ProcessControl.Infrastructure\ProcessControl.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

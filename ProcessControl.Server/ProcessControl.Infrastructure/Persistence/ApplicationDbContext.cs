@@ -20,5 +20,24 @@ namespace ProcessControl.Infrastructure.Persistence
                 .WithMany(p => p.Historico)
                 .HasForeignKey(h => h.ProcessoId);
         }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker
+                .Entries<HistoricoProcesso>()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified);
+
+            foreach (var entityEntry in entries)
+            {
+                entityEntry.Entity.DataAlteracao = DateTime.UtcNow;
+
+                if (entityEntry.State == EntityState.Added)
+                {
+                    entityEntry.Entity.DataInclusao = DateTime.UtcNow;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
     }
 }

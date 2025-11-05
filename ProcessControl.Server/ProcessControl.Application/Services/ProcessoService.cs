@@ -1,3 +1,5 @@
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ProcessControl.Application.DTOs;
 using ProcessControl.Application.Exceptions;
 using ProcessControl.Application.Interfaces;
@@ -5,9 +7,10 @@ using ProcessControl.Domain.Entities;
 
 namespace ProcessControl.Application.Services
 {
-    public sealed class ProcessoService(IProcessoRepository processRepository) : IProcessoService
+    public sealed class ProcessoService(IUnitOfWork unitOfWork, IMapper mapper) : IProcessoService
     {
-        private readonly IProcessoRepository _processRepository = processRepository;
+        private readonly IUnitOfWork _unitOfWork = unitOfWork;
+        private readonly IMapper _mapper = mapper;
 
         public async Task<IEnumerable<ProcessoDto>> GetProcessListAsync(int page, int? limit, string? searchTerm)
         {
@@ -21,82 +24,67 @@ namespace ProcessControl.Application.Services
                 ? Math.Min(limit.Value, maxLimit)
                 : defaultLimit;
 
-            var processos = await _processRepository.GetProcessListAsync(page, pageSize, searchTerm);
+            var processos = await _unitOfWork.ProcessoRepository.GetProcessListAsync(page, pageSize, searchTerm);
 
-            return processos.Select(p => new ProcessoDto
-            {
-                Id = p.Id,
-                NumeroProcesso = p.NumeroProcesso,
-                Autor = p.Autor,
-                Reu = p.Reu,
-                DataAjuizamento = p.DataAjuizamento,
-                Status = p.Status,
-                Descricao = p.Descricao
-            });
+            return _mapper.Map<IEnumerable<ProcessoDto>>(processos);
         }
 
         public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            return new ProcessoDto
-            {
-                Id = processo.Id,
-                NumeroProcesso = processo.NumeroProcesso,
-                Autor = processo.Autor,
-                Reu = processo.Reu,
-                DataAjuizamento = processo.DataAjuizamento,
-                Status = processo.Status,
-                Descricao = processo.Descricao
-            };
+            return _mapper.Map<ProcessoDto>(processo);
         }
 
         public async Task<ProcessoDto> CreateProcessoAsync(CreateProcessoDto createProcessoDto)
         {
-            var processo = new Processo
-            {
-                NumeroProcesso = createProcessoDto.NumeroProcesso,
-                Autor = createProcessoDto.Autor,
-                Reu = createProcessoDto.Reu,
-                Descricao = createProcessoDto.Descricao,
-                DataAjuizamento = createProcessoDto.DataAjuizamento.ToUniversalTime(),
-                Status = createProcessoDto.Status
-            };
+            var processo = _mapper.Map<Processo>(createProcessoDto);
 
-            await _processRepository.AddAsync(processo);
+            await _unitOfWork.ProcessoRepository.AddAsync(processo);
 
-            return new ProcessoDto
+            try
             {
-                Id = processo.Id,
-                NumeroProcesso = processo.NumeroProcesso,
-                Autor = processo.Autor,
-                Reu = processo.Reu,
-                DataAjuizamento = processo.DataAjuizamento,
-                Status = processo.Status,
-                Descricao = processo.Descricao
-            };
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is Npgsql.PostgresException pgEx)
+                {
+                    switch (pgEx.SqlState)
+                    {
+                        case "23505": // unique_violation
+                            throw new DuplicateEntryException($"Já existe um processo com o número '{processo.NumeroProcesso}'.", pgEx);
+
+                        case "23503": // foreign_key_violation
+                            throw new ForeignKeyViolationException("Uma das referências de dados fornecidas é inválida.", pgEx);
+                    }
+                }
+                throw; // Re-throw other DbUpdateExceptions
+            }
+
+            return _mapper.Map<ProcessoDto>(processo);
         }
 
         public async Task UpdateProcessoAsync(int id, UpdateProcessoDto updateProcessoDto)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            processo.NumeroProcesso = updateProcessoDto.NumeroProcesso;
-            processo.Autor = updateProcessoDto.Autor;
-            processo.Reu = updateProcessoDto.Reu;
-            processo.Status = updateProcessoDto.Status;
-            processo.Descricao = updateProcessoDto.Descricao;
+            // Mapeia as propriedades do DTO para a entidade que já está sendo rastreada pelo EF Core
+            _mapper.Map(updateProcessoDto, processo);
 
-            await _processRepository.UpdateAsync(processo);
+            await _unitOfWork.ProcessoRepository.UpdateAsync(processo);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task DeleteProcessoAsync(int id)
         {
-            var processo = await _processRepository.GetByIdAsync(id);
+            var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
-            await _processRepository.DeleteAsync(id);
+            
+            await _unitOfWork.ProcessoRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

@@ -1,9 +1,12 @@
+
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.API.Middleware;
+using ProcessControl.API.Exceptions;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Application.Services;
+using ProcessControl.Infrastructure;
 using ProcessControl.Infrastructure.Persistence;
-using ProcessControl.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,14 +14,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IProcessoRepository, ProcessoRepository>();
-builder.Services.AddScoped<IHistoricoProcessoRepository, HistoricoProcessoRepository>();
+// Adiciona e configura o FluentValidation
+builder.Services.AddValidatorsFromAssembly(typeof(ProcessoService).Assembly);
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProcessoService, ProcessoService>();
 builder.Services.AddScoped<IHistoricoProcessoService, HistoricoProcessoService>();
 
+// Configura o AutoMapper para escanear os perfis de mapeamento no assembly da camada de Aplicação
+builder.Services.AddAutoMapper(typeof(ProcessoService).Assembly);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 // Add services to the container.
 builder.Services.AddDbContext<ProcessControl.Infrastructure.Persistence.ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -52,9 +63,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseExceptionHandler(_ => { });
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseHttpsRedirection();
 
 app.UseCors("AllowAngular");
 
