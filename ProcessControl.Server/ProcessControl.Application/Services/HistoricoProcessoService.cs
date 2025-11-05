@@ -42,9 +42,7 @@ namespace ProcessControl.Application.Services
             {
                 ProcessoId = processoId,
                 Processo = processo,
-                Descricao = createHistoricoDto.Descricao,
-                DataInclusao = DateTime.UtcNow,
-                DataAlteracao = DateTime.UtcNow
+                Descricao = createHistoricoDto.Descricao
             };
 
             await _historicoRepository.AddAsync(historico);
@@ -65,7 +63,6 @@ namespace ProcessControl.Application.Services
             if (historico == null) throw new NotFoundException($"Historico with ID {id} for Processo {processoId} not found.");
 
             historico.Descricao = updateHistoricoDto.Descricao;
-            historico.DataAlteracao = DateTime.UtcNow;
 
             await _historicoRepository.UpdateAsync(historico);
         }
