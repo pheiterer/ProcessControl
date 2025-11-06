@@ -29,11 +29,11 @@ namespace ProcessControl.Infrastructure.Persistence
 
             foreach (var entityEntry in entries)
             {
-                entityEntry.Entity.DataAlteracao = DateTime.UtcNow;
+                entityEntry.Property("DataAlteracao").CurrentValue = DateTime.UtcNow;
 
                 if (entityEntry.State == EntityState.Added)
                 {
-                    entityEntry.Entity.DataInclusao = DateTime.UtcNow;
+                    entityEntry.Property("DataInclusao").CurrentValue = DateTime.UtcNow;
                 }
             }
 

@@ -15,6 +15,9 @@
     <div class="mb-2">
       <label class="form-label" for="dataAjuizamentoInput">Data de ajuizamento</label>
       <input id="dataAjuizamentoInput" type="date" class="form-control" formControlName="dataAjuizamento" />
+      <div *ngIf="form.get('dataAjuizamento')?.errors?.['pattern'] && form.get('dataAjuizamento')?.touched" class="text-danger">
+        Formato de data inválido. Use DD-MM-AAAA.
+      </div>
     </div>
     <div class="mb-2">
       <label class="form-label" for="statusInput">Status</label>

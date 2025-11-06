@@ -8,7 +8,6 @@ namespace ProcessControl.Application.Interfaces
         Task<IEnumerable<Processo>> GetProcessListAsync(int page, int limit, string? searchTerm);
         Task<Processo?> GetByIdAsync(int id);
         Task AddAsync(Processo processo);
-        Task UpdateAsync(Processo processo);
         Task DeleteAsync(int id);
         Task<Processo?> GetByNumeroProcessoAsync(string numeroProcesso);
     }

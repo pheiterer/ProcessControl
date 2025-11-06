@@ -38,7 +38,7 @@ export class ProcessModalComponent implements OnInit, AfterViewInit {
       numeroProcesso: ['', [Validators.required, Validators.maxLength(50)]],
       autor: ['', [Validators.required, Validators.maxLength(100)]],
       reu: ['', [Validators.required, Validators.maxLength(100)]],
-      dataAjuizamento: ['', Validators.required],
+      dataAjuizamento: ['', [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]],
       status: [ProcessStatus.EmAndamento, Validators.required],
       descricao: [''],
     });
@@ -60,6 +60,10 @@ export class ProcessModalComponent implements OnInit, AfterViewInit {
         dataAjuizamento: formattedDate,
         status: Number(this.process.status),
       });
+
+      if (Number(this.process.status) === ProcessStatus.Encerrado) {
+        this.form.get('status')?.disable();
+      }
     }
   }
 

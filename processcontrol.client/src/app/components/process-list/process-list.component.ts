@@ -1,15 +1,27 @@
-import { Component, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ModalComponent } from '../shared/modal/modal.component';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
 import { ProcessModel } from '../../models/process.model';
 import { ProcessService } from '../../services/process.service';
 import { Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ProcessModalComponent } from '../process-modal/process-modal.component';
+import { InfiniteScrollDirective } from '../../directives/infinite-scroll.directive';
+import { SortIconDirective } from '../../directives/sort-icon.directive';
 
 @Component({
   selector: 'app-process-list',
-  standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ProcessModalComponent,
+    ModalComponent,
+    InfiniteScrollDirective,
+    SortIconDirective,
+  ],
   templateUrl: './process-list.component.html',
   styleUrls: ['./process-list.component.css'],
 })
@@ -52,7 +64,7 @@ export class ProcessListComponent implements OnInit, OnDestroy {
       });
   }
 
-  private loadPage(page: number): void {
+  loadPage(page: number): void {
     if (this.isLoading || !this.hasMore) return;
     this.isLoading = true;
     this.processService.getProcesses(this.searchTerm, page, this.pageSize).subscribe(
@@ -63,7 +75,6 @@ export class ProcessListComponent implements OnInit, OnDestroy {
         } else {
           this.processes = this.processes.concat(items);
         }
-        // apply local sort if active
         if (this.sortColumn) {
           this.applySort();
         }
@@ -187,16 +198,5 @@ export class ProcessListComponent implements OnInit, OnDestroy {
     this.hasMore = true;
     this.processes = [];
     this.loadPage(1);
-  }
-
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
-    if (this.isLoading || !this.hasMore) return;
-    const threshold = 300;
-    const position = window.innerHeight + window.scrollY;
-    const height = document.documentElement.scrollHeight;
-    if (position >= height - threshold) {
-      this.loadPage(this.currentPage + 1);
-    }
   }
 }

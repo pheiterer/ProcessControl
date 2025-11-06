@@ -21,6 +21,9 @@ import { ToastService, ToastMessage } from '../../../services/toast.service';
         aria-live="assertive"
         aria-atomic="true"
       >
+        <div *ngIf="m.title" class="toast-header">
+          <strong class="me-auto">Código {{ m.title }}</strong>
+        </div>
         <div class="d-flex">
           <div class="toast-body">{{ m.text }}</div>
           <button

@@ -10,15 +10,15 @@ namespace ProcessControl.Domain.Entities
 
         public string Descricao { get; private set; } = null!;
 
-        public DateTime DataInclusao { get; set; }
+        public DateTime DataInclusao { get; private set; }
 
-        public DateTime DataAlteracao { get; set; }
+        public DateTime DataAlteracao { get; private set; }
 
         private HistoricoProcesso() { }
 
-        public HistoricoProcesso(int processoId, string descricao)
+        public HistoricoProcesso(Processo processo, string descricao)
         {
-            ProcessoId = processoId;
+            Processo = processo;
             Descricao = descricao;
         }
 
