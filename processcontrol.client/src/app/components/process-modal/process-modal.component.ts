@@ -60,6 +60,10 @@ export class ProcessModalComponent implements OnInit, AfterViewInit {
         dataAjuizamento: formattedDate,
         status: Number(this.process.status),
       });
+
+      if (Number(this.process.status) === ProcessStatus.Encerrado) {
+        this.form.get('status')?.disable();
+      }
     }
   }
 
