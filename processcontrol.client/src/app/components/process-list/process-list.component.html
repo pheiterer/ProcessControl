@@ -4,7 +4,7 @@
 <app-process-modal *ngIf="modalVisible" [process]="modalToEdit" (saved)="onModalSaved()" (canceled)="closeModal()">
 </app-process-modal>
 
-<div class="container mt-4">
+<div class="container mt-4" (appInfiniteScroll)="loadPage(currentPage + 1)" [infiniteScrollDisabled]="isLoading || !hasMore">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Lista de Processos</h2>
   </div>
@@ -29,35 +29,20 @@
   <table class="table table-striped table-hover responsive-table">
     <thead class="table-dark">
       <tr>
-        <th style="cursor: pointer;" (click)="sortBy('numeroProcesso')">
+        <th style="cursor: pointer;" (click)="sortBy('numeroProcesso')" appSortIcon="numeroProcesso" [currentSortColumn]="sortColumn" [currentSortDirection]="sortAscending ? 'asc' : 'desc'">
           Número do Processo
-          <i *ngIf="sortColumn==='numeroProcesso' && sortAscending" class="bi bi-caret-up-fill"></i>
-          <i *ngIf="sortColumn==='numeroProcesso' && !sortAscending" class="bi bi-caret-down-fill"></i>
-          <i *ngIf="sortColumn!=='numeroProcesso'" class="bi bi-sort-down"></i>
         </th>
-        <th style="cursor: pointer;" (click)="sortBy('autor')">
+        <th style="cursor: pointer;" (click)="sortBy('autor')" appSortIcon="autor" [currentSortColumn]="sortColumn" [currentSortDirection]="sortAscending ? 'asc' : 'desc'">
           Autor
-          <i *ngIf="sortColumn==='autor' && sortAscending" class="bi bi-caret-up-fill"></i>
-          <i *ngIf="sortColumn==='autor' && !sortAscending" class="bi bi-caret-down-fill"></i>
-          <i *ngIf="sortColumn!=='autor'" class="bi bi-sort-down"></i>
         </th>
-        <th style="cursor: pointer;" (click)="sortBy('reu')">
+        <th style="cursor: pointer;" (click)="sortBy('reu')" appSortIcon="reu" [currentSortColumn]="sortColumn" [currentSortDirection]="sortAscending ? 'asc' : 'desc'">
           Réu
-          <i *ngIf="sortColumn==='reu' && sortAscending" class="bi bi-caret-up-fill"></i>
-          <i *ngIf="sortColumn==='reu' && !sortAscending" class="bi bi-caret-down-fill"></i>
-          <i *ngIf="sortColumn!=='reu'" class="bi bi-sort-down"></i>
         </th>
-        <th style="cursor: pointer;" (click)="sortBy('dataAjuizamento')">
+        <th style="cursor: pointer;" (click)="sortBy('dataAjuizamento')" appSortIcon="dataAjuizamento" [currentSortColumn]="sortColumn" [currentSortDirection]="sortAscending ? 'asc' : 'desc'">
           Data de Ajuizamento
-          <i *ngIf="sortColumn==='dataAjuizamento' && sortAscending" class="bi bi-caret-up-fill"></i>
-          <i *ngIf="sortColumn==='dataAjuizamento' && !sortAscending" class="bi bi-caret-down-fill"></i>
-          <i *ngIf="sortColumn!=='dataAjuizamento'" class="bi bi-sort-down"></i>
         </th>
-        <th style="cursor: pointer;" (click)="sortBy('status')">
+        <th style="cursor: pointer;" (click)="sortBy('status')" appSortIcon="status" [currentSortColumn]="sortColumn" [currentSortDirection]="sortAscending ? 'asc' : 'desc'">
           Status
-          <i *ngIf="sortColumn==='status' && sortAscending" class="bi bi-caret-up-fill"></i>
-          <i *ngIf="sortColumn==='status' && !sortAscending" class="bi bi-caret-down-fill"></i>
-          <i *ngIf="sortColumn!=='status'" class="bi bi-sort-down"></i>
         </th>
         <th class="text-center">Ações</th>
       </tr>

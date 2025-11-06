@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProcessModel, ProcessHistory } from '../../models/process.model';
@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MovementFormComponent } from '../movement-form/movement-form.component';
 import { ProcessModalComponent } from '../process-modal/process-modal.component';
 import { ModalComponent } from '../shared/modal/modal.component';
+import { InfiniteScrollDirective } from '../../directives/infinite-scroll.directive';
 
 @Component({
   selector: 'app-process-detail',
@@ -19,6 +20,7 @@ import { ModalComponent } from '../shared/modal/modal.component';
     ProcessModalComponent,
     FormsModule,
     ModalComponent,
+    InfiniteScrollDirective,
   ],
   templateUrl: './process-detail.component.html',
   styleUrls: ['./process-detail.component.css'],
@@ -117,17 +119,6 @@ export class ProcessDetailComponent implements OnInit {
         this.isLoadingHistorico = false;
       },
     });
-  }
-
-  @HostListener('window:scroll', [])
-  onWindowScroll(): void {
-    if (this.isLoadingHistorico || !this.process || !this.historicoHasMore) return;
-    const threshold = 300;
-    const position = window.innerHeight + window.scrollY;
-    const height = document.documentElement.scrollHeight;
-    if (position >= height - threshold) {
-      this.loadHistorico(this.process.id, this.historicoCurrentPage + 1, false);
-    }
   }
 
   startEditMovement(m: ProcessHistory): void {
