@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ProcessControl.Application.Exceptions;
 using ProcessControl.Application.Interfaces;
 using ProcessControl.Domain.Entities;
 using ProcessControl.Infrastructure.Persistence;
@@ -25,18 +24,12 @@ namespace ProcessControl.Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<Processo?> GetByIdAsync(int id) => 
-            await _context.Processos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        public async Task<Processo?> GetByIdAsync(int id) =>
+            await _context.Processos.FirstOrDefaultAsync(p => p.Id == id);
 
         public async Task AddAsync(Processo processo)
         {
             await _context.Processos.AddAsync(processo);
-        }
-
-        public Task UpdateAsync(Processo processo)
-        {
-            _context.Entry(processo).State = EntityState.Modified;
-            return Task.CompletedTask;
         }
 
         public async Task DeleteAsync(int id)

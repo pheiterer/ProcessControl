@@ -29,7 +29,7 @@ namespace ProcessControl.Application.Services
             return _mapper.Map<IEnumerable<ProcessoDto>>(processos);
         }
 
-        public async Task<ProcessoDto> GetProcessoByIdAsync(int id)
+        public async Task<ProcessoDto?> GetProcessoByIdAsync(int id)
         {
             var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
@@ -39,7 +39,13 @@ namespace ProcessControl.Application.Services
 
         public async Task<ProcessoDto> CreateProcessoAsync(CreateProcessoDto createProcessoDto)
         {
-            var processo = _mapper.Map<Processo>(createProcessoDto);
+            var processo = new Processo(
+                createProcessoDto.NumeroProcesso,
+                createProcessoDto.Autor,
+                createProcessoDto.Reu,
+                createProcessoDto.DataAjuizamento,
+                createProcessoDto.Descricao
+            );
 
             await _unitOfWork.ProcessoRepository.AddAsync(processo);
 
@@ -71,10 +77,15 @@ namespace ProcessControl.Application.Services
             var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
 
-            // Mapeia as propriedades do DTO para a entidade que já está sendo rastreada pelo EF Core
-            _mapper.Map(updateProcessoDto, processo);
+            processo.AtualizarDadosBasicos(
+                updateProcessoDto.NumeroProcesso,
+                updateProcessoDto.Autor,
+                updateProcessoDto.Reu,
+                updateProcessoDto.Descricao
+            );
 
-            await _unitOfWork.ProcessoRepository.UpdateAsync(processo);
+            processo.MudarStatus(updateProcessoDto.Status);
+
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -82,7 +93,7 @@ namespace ProcessControl.Application.Services
         {
             var processo = await _unitOfWork.ProcessoRepository.GetByIdAsync(id);
             if (processo == null) throw new NotFoundException($"Processo with ID {id} not found.");
-            
+
             await _unitOfWork.ProcessoRepository.DeleteAsync(id);
             await _unitOfWork.SaveChangesAsync();
         }

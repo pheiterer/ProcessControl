@@ -32,7 +32,7 @@ namespace ProcessControl.Domain.Entities
             NumeroProcesso = numeroProcesso;
             Autor = autor;
             Reu = reu;
-            DataAjuizamento = dataAjuizamento;
+            DataAjuizamento = dataAjuizamento.ToUniversalTime();
             Descricao = descricao;
             Status = StatusProcesso.EmAndamento;
 
@@ -64,7 +64,7 @@ namespace ProcessControl.Domain.Entities
 
         private void AdicionarHistorico(string descricao)
         {
-            var novoHistorico = new HistoricoProcesso(this.Id, descricao);
+            var novoHistorico = new HistoricoProcesso(this, descricao);
             Historico.Add(novoHistorico);
         }
     }

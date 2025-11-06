@@ -1,8 +1,8 @@
+using System.Net;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ProcessControl.Application.Exceptions;
-using System.Net;
 
 namespace ProcessControl.API.Exceptions
 {
@@ -34,6 +34,12 @@ namespace ProcessControl.API.Exceptions
                 case ForeignKeyViolationException e:
                     problemDetails.Title = "Referência de dados inválida";
                     problemDetails.Status = (int)HttpStatusCode.Conflict;
+                    problemDetails.Detail = e.Message;
+                    break;
+
+                case InvalidOperationException e:
+                    problemDetails.Title = "Operação inválida";
+                    problemDetails.Status = (int)HttpStatusCode.BadRequest;
                     problemDetails.Detail = e.Message;
                     break;
 

@@ -13,10 +13,9 @@ namespace ProcessControl.Application.Mapping
             CreateMap<HistoricoProcesso, HistoricoProcessoDto>();
 
             // Mapeamento de DTO para Entidade
-            CreateMap<CreateProcessoDto, Processo>();
-            CreateMap<UpdateProcessoDto, Processo>();
-            CreateMap<CreateHistoricoProcessoDto, HistoricoProcesso>();
-            CreateMap<UpdateHistoricoProcessoDto, HistoricoProcesso>();
+
+
+
         }
     }
 }

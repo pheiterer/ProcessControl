@@ -1,6 +1,3 @@
-
-using ProcessControl.Domain.Entities;
-
 namespace ProcessControl.Application.DTOs
 {
     public class CreateProcessoDto
@@ -10,8 +7,6 @@ namespace ProcessControl.Application.DTOs
         public required string Autor { get; set; }
 
         public required string Reu { get; set; }
-
-        public required StatusProcesso Status { get; set; }
 
         public required DateTime DataAjuizamento { get; set; }
 
