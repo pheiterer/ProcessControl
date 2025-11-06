@@ -191,6 +191,7 @@ export class ProcessDetailComponent implements OnInit {
         next: (proc) => {
           this.process = ProcessModel.fromDto(proc);
           this.isLoadingProcess = false;
+          this.loadHistorico(this.process.id, 1, true);
         },
         error: () => {
           this.isLoadingProcess = false;

@@ -21,8 +21,9 @@ export class SortableTableDirective {
   @Input() sortDirection: SortDirection = '';
 
   @HostListener('click', ['$event.target'])
-  onSort(target: HTMLElement) {
-    const column = target.getAttribute('sortKey');
+  onSort(target: EventTarget | null) {
+    const htmlTarget = target as HTMLElement;
+    const column = htmlTarget?.getAttribute('sortKey');
     if (column) {
       this.sortColumn = column;
       this.sortDirection = rotate[this.sortDirection];
