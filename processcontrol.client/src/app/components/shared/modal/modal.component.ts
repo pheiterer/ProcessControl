@@ -16,8 +16,8 @@ declare let bootstrap: any;
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="modal fade" tabindex="-1" aria-hidden="true" #modalDiv>
-      <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" tabindex="-1" aria-hidden="true" #modalDiv (click)="onSecondary()">
+      <div class="modal-dialog modal-dialog-centered" (click)="$event.stopPropagation()">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">{{ title }}</h5>
