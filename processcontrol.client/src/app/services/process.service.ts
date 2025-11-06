@@ -91,8 +91,10 @@ export class ProcessService {
   }
 
   private handleError(err: any) {
-    const message = err?.error?.Message || err?.message || 'Ocorreu um erro na requisição.';
-    this.toastService.showError(message);
+    const title = err.status;
+    const message =
+      err?.error?.detail || err?.error?.Message || err?.message || 'Ocorreu um erro na requisição.';
+    this.toastService.showError(message, 5000, title);
     return throwError(() => err);
   }
 }
